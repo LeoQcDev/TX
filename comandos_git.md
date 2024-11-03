@@ -58,3 +58,6 @@ Aquí tienes un resumen de los comandos más comunes y útiles en Git, organizad
 - **`git rm <archivo>`**: Elimina un archivo del repositorio y del sistema de archivos.
 
 Estos comandos cubren la mayoría de las operaciones esenciales en Git, desde la inicialización de repositorios hasta el trabajo con ramas y la gestión de repositorios remotos.
+
+Para borrar git
+rm -rf .git
