@@ -1,0 +1,37 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Ignorar archivos y carpetas del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos generales de logs y entornos
+*.log
+.env
+.env.local
+.env.*.local
+
+# Ignorar archivos de entorno en el backend
+/backend/.env.*
+/backend/env
+
+
+# Ignorar dependencias de Node.js en el frontend
+/frontend/node_modules/
+/frontend/.next/
+/frontend/out/
+/frontend/.turbo/
+
+# Archivos de configuración específicos de Next.js que no necesitas versionar
+/frontend/.env.*
+
+# Ignorar dependencias de Python y configuraciones específicas en el backend (si es relevante)
+__pycache__/
+/backend/venv/
+/backend/*.pyc
+/backend/*.pyo
+/backend/*.pyd
+
+# Ignorar archivos de paquetes
+*.lock
+*.zip
+*.tar.gz
