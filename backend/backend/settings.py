@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "django_extensions",
+    "drf_yasg",
 ]
 
 REST_FRAMEWORK = {
@@ -96,16 +97,24 @@ WSGI_APPLICATION = "backend.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "economia_db",
+#         "USER": "economia_user",
+#         "PASSWORD": "Leo",
+#         "HOST": "localhost",
+#         "PORT": "5432",
+#     }
+# }
+
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "economia_db",
-        "USER": "economia_user",
-        "PASSWORD": "Leo",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
 
 
 # Password validation
