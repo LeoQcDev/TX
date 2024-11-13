@@ -1,17 +1,17 @@
 from rest_framework import viewsets, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.response import Response
-from .models import Client, Pole, ComercialMargin, Representative, Contract
+from .models import Client, Pole, CommercialMargin, Representative, Contract
 from .serializers import (
     ClientSerializer,
     PoleSerializer,
-    ComercialMarginSerializer,
+    CommercialMarginSerializer,
     RepresentativeSerializer,
     ContractSerializer,
 )
 from .filters import (
     PoleFilter,
-    ComercialMarginFilter,
+    CommercialMarginFilter,
     RepresentativeFilter,
     ContractFilter,
     ClientFilter,
@@ -83,7 +83,7 @@ class PoleViewSet(viewsets.ModelViewSet):
 
 
 # Vista para el modelo MargenComercial
-class ComercialMarginViewSet(viewsets.ModelViewSet):
+class CommercialMarginViewSet(viewsets.ModelViewSet):
     """
     ViewSet para gestionar operaciones CRUD del modelo MargenComercial.
 
@@ -92,10 +92,10 @@ class ComercialMarginViewSet(viewsets.ModelViewSet):
     esté asociado a clientes.
     """
 
-    queryset = ComercialMargin.objects.all()
-    serializer_class = ComercialMarginSerializer
+    queryset = CommercialMargin.objects.all()
+    serializer_class = CommercialMarginSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_class = ComercialMarginFilter
+    filterset_class = CommercialMarginFilter
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -103,8 +103,8 @@ class ComercialMarginViewSet(viewsets.ModelViewSet):
         margen comercial que esté asociado a uno o más clientes.
         Retorna un error si el margen comercial tiene clientes asociados.
         """
-        comercial_margin = self.get_object()
-        if Client.objects.filter(comercial_margin=comercial_margin).exists():
+        commercial_margin = self.get_object()
+        if Client.objects.filter(commercial_margin=commercial_margin).exists():
             return Response(
                 {
                     "detail": "No se puede eliminar un margen comercial que esté asociado a uno o más clientes"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Contract, Representative, Pole, ComercialMargin
+from .models import Client, Contract, Representative, Pole, CommercialMargin
 
 # Registra tus modelos aquí.
 
@@ -7,7 +7,7 @@ admin.site.register(Client)
 admin.site.register(Contract)
 admin.site.register(Representative)
 admin.site.register(Pole)
-admin.site.register(ComercialMargin)
+admin.site.register(CommercialMargin)
 
 
 admin.site.site_header = "Administración de TECNOTEX"  # Encabezado superior

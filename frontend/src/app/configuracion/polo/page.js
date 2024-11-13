@@ -54,7 +54,7 @@ const PolePage = () => {
       <LoadingErrorWrapper
         isLoading={isLoading}
         error={error}
-        loadingMessage="Cargando Polos..."
+        loadingMessage="Cargando polos..."
       />
     );
 
@@ -90,7 +90,7 @@ const PolePage = () => {
             <SearchField
               searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
-              placeholder="Buscar Polo"
+              placeholder="Buscar polo"
             />
 
             <PageButtonsLayout>
@@ -100,7 +100,7 @@ const PolePage = () => {
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear Polo" // Cambiar según la entidad
+                label="Crear polo" // Cambiar según la entidad
               />
             </PageButtonsLayout>
           </PageComponentsLayout>

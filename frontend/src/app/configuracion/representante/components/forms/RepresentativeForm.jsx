@@ -19,8 +19,8 @@ const FormRepresentative = ({
     <div className="bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         {actionType === "create"
-          ? "Nuevo Representante"
-          : "Editar Representante"}
+          ? "Nuevo representante"
+          : "Editar representante"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

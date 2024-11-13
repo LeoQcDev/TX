@@ -5,7 +5,7 @@ from gestion_clientes.models import (
     Client,
     Contract,
     Pole,
-    ComercialMargin,
+    CommercialMargin,
     Representative,
 )
 
@@ -20,7 +20,7 @@ class ClienteModelTest(TestCase):
             contract_number="TX-12345",
             signature_date=timezone.now()
         )
-        self.comercial_margin = ComercialMargin.objects.create(comercial_margin=10)
+        self.commercial_margin = CommercialMargin.objects.create(commercial_margin=10)
         self.representative = Representative.objects.create(
             name="Juan",
             last_name="Pérez",
@@ -35,7 +35,7 @@ class ClienteModelTest(TestCase):
             'reeup_code': '666666',
             'nip_code': '999999999',
             'client_email': 'cliente@empresa.com',
-            'comercial_registry': '7777777',
+            'commercial_registry': '7777777',
             'client_phone': '+53 12345678',
             'pole': self.pole
         }
@@ -118,7 +118,7 @@ class ClienteModelTest(TestCase):
     def test_validaciones_campos_unicos(self):
         campos_unicos = [
             'code', 'name', 'reeup_code', 'nip_code',
-            'comercial_registry', 'client_email', 'client_phone'
+            'commercial_registry', 'client_email', 'client_phone'
         ]
 
         for campo in campos_unicos:

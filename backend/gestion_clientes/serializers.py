@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Client, Pole, ComercialMargin, Representative, Contract
+from .models import Client, Pole, CommercialMargin, Representative, Contract
 
 
 # Convierte cadenas vacías a None
@@ -15,9 +15,9 @@ class PoleSerializer(serializers.ModelSerializer):
 
 
 # Serializa MargenComercial a JSON
-class ComercialMarginSerializer(serializers.ModelSerializer):
+class CommercialMarginSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ComercialMargin
+        model = CommercialMargin
         fields = "__all__"
 
 
@@ -30,11 +30,13 @@ class ContractSerializer(serializers.ModelSerializer):
         model = Contract
         fields = "__all__"
 
+    # Obtiene la fecha de expiración del contrato
     def get_expiration_date(self, obj):
         if obj.signature_date:
             return obj.expiration_date
         return None
 
+    # Obtiene el cliente asociado al contrato
     def get_client(self, obj):
         client = Client.objects.filter(contract=obj).first()
         if client:
@@ -52,9 +54,11 @@ class RepresentativeSerializer(serializers.ModelSerializer):
         model = Representative
         fields = "__all__"
 
+    # Convierte cadenas vacías a None
     def validate_correo_representante(self, value):
         return validate_empty_string(value)
 
+    # Convierte cadenas vacías a None
     def validate_telefono_representante(self, value):
         return validate_empty_string(value)
 
@@ -76,8 +80,8 @@ class ClientSerializer(serializers.ModelSerializer):
     contract = serializers.PrimaryKeyRelatedField(
         queryset=Contract.objects.all(), allow_null=True, required=False
     )
-    comercial_margin = serializers.PrimaryKeyRelatedField(
-        queryset=ComercialMargin.objects.all(), allow_null=True, required=False
+    commercial_margin = serializers.PrimaryKeyRelatedField(
+        queryset=CommercialMargin.objects.all(), allow_null=True, required=False
     )
     ubi = serializers.PrimaryKeyRelatedField(
         queryset=Client.objects.all(), allow_null=True, required=False
@@ -87,31 +91,32 @@ class ClientSerializer(serializers.ModelSerializer):
         model = Client
         fields = "__all__"
 
+    # Personaliza la representación de las relaciones anidadas
     def to_representation(self, instance):
+        """
+        Personaliza la representación de las relaciones anidadas
+        """
         representation = super().to_representation(instance)
-        representation["pole"] = (
-            PoleSerializer(instance.pole).data if instance.pole else None
-        )
-        representation["contract"] = (
-            ContractSerializer(instance.contract).data if instance.contract else None
-        )
-        representation["representative"] = (
-            RepresentativeSerializer(instance.representative).data
-            if instance.representative
-            else None
-        )
-        representation["ubi"] = (
-            ClientUBISerializer(instance.ubi).data if instance.ubi else None
-        )
-        representation["comercial_margin"] = (
-            ComercialMarginSerializer(instance.comercial_margin).data
-            if instance.comercial_margin
-            else None
-        )
+        
+        # Utilizar dict comprehension para mayor legibilidad
+        related_fields = {
+            'pole': PoleSerializer,
+            'contract': ContractSerializer,
+            'representative': RepresentativeSerializer,
+            'ubi': ClientUBISerializer,
+            'commercial_margin': CommercialMarginSerializer
+        }
+        
+        for field, serializer_class in related_fields.items():
+            related_instance = getattr(instance, field)
+            representation[field] = (
+                serializer_class(related_instance).data if related_instance else None
+            )
+            
         return representation
 
-    # convertir "" a None en los campos unique=true con null=true
-    def validate_comercial_margin(self, value):
+    # Convierte cadenas vacías a None en los campos unique=true con null=true
+    def validate_commercial_margin(self, value):
         return validate_empty_string(value)
 
     def validate_reeup_code(self, value):
@@ -120,7 +125,7 @@ class ClientSerializer(serializers.ModelSerializer):
     def validate_nip_code(self, value):
         return validate_empty_string(value)
 
-    def validate_comercial_registry(self, value):
+    def validate_commercial_registry(self, value):
         return validate_empty_string(value)
 
     def validate_client_phone(self, value):

@@ -18,15 +18,15 @@ const ComercialMarginForm = ({
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {actionType === "create" ? "Nuevo Margen" : "Editar Margen"}
+        {actionType === "create" ? "Nuevo margen" : "Editar margen"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <FormField
-          id="comercial_margin"
+          id="commercial_margin"
           label="Cantidad margen"
           type="number"
           placeholder="Ej: 25"
-          register={register("comercial_margin", {
+          register={register("commercial_margin", {
             required: "Campo obligatorio. Por favor complételo",
             min: {
               value: 1,
@@ -42,7 +42,7 @@ const ComercialMarginForm = ({
           })}
           component={FormInput}
           step="1"
-          error={errors.comercial_margin}
+          error={errors.commercial_margin}
           watch={watch}
           required
         />

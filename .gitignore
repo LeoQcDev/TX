@@ -14,6 +14,8 @@ Thumbs.db
 /backend/.env.*
 /backend/env
 
+# Ignorar migraciones
+/backend/gestion_clientes/migrations
 
 # Ignorar dependencias de Node.js en el frontend
 /frontend/node_modules/

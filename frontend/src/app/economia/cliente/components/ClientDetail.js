@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Phone,
   Mail,
@@ -14,21 +14,24 @@ import SectionTitle from "@/components/SectionTitle";
 import InfoItem from "@/components/InfoItem";
 import ContractInfoItem from "@/components/ContractInfoItem";
 import XButton from "@/components/XButton";
+import useEscapeKey from "@/hooks/useEscapeKey";
 
 const ClientDetail = ({ client, onClose }) => {
+  useEscapeKey(onClose);
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="flex justify-between items-center p-6 bg-blackRedTX">
           <h2 className="text-2xl font-bold text-white">
-            Detalles del Cliente
+            Detalles del cliente
           </h2>
           <XButton action={onClose} />
         </div>
         <div className="overflow-y-auto p-6 max-h-[calc(90vh-80px)]">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <section className="bg-gray-50 p-4 rounded-lg shadow">
-              <SectionTitle icon={Building}>Información General</SectionTitle>
+              <SectionTitle icon={Building}>Información general</SectionTitle>
               <InfoItem label="Nombre" value={client.name} icon={Building} />
               <InfoItem label="Código" value={client.code} icon={Hash} />
               <InfoItem
@@ -47,13 +50,13 @@ const ClientDetail = ({ client, onClose }) => {
                 icon={MapPin}
               />
               <InfoItem
-                label="Margen Comercial"
-                value={client.comercial_margin?.comercial_margin}
+                label="Margen comercial"
+                value={client.commercial_margin?.commercial_margin}
                 icon={Briefcase}
               />
               <InfoItem
-                label="Registro Mercantil"
-                value={client.comercial_registry}
+                label="Registro mercantil"
+                value={client.commercial_registry}
                 icon={FileText}
               />
               <div className="mb-2 flex items-center">
@@ -97,20 +100,20 @@ const ClientDetail = ({ client, onClose }) => {
             </section>
 
             <section className="md:col-span-2 bg-gray-50 p-4 rounded-lg shadow">
-              <SectionTitle icon={FileText}>Datos del Contrato</SectionTitle>
+              <SectionTitle icon={FileText}>Datos del contrato</SectionTitle>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <ContractInfoItem
-                  label="Número de Contrato"
+                  label="Número de contrato"
                   value={client.contract?.contract_number}
                   icon={Hash}
                 />
                 <ContractInfoItem
-                  label="Fecha de Firma"
+                  label="Fecha de firma"
                   value={client.contract?.signature_date}
                   icon={FileText}
                 />
                 <ContractInfoItem
-                  label="Fecha de Vencimiento"
+                  label="Fecha de vencimiento"
                   value={client.contract?.expiration_date}
                   icon={FileText}
                 />
@@ -122,7 +125,7 @@ const ClientDetail = ({ client, onClose }) => {
               {client?.representative ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <InfoItem
-                    label="Nombre y Apellidos"
+                    label="Nombre y apellidos"
                     value={`${client.representative.name} ${client.representative.last_name}`}
                     icon={User}
                   />

@@ -43,13 +43,13 @@ const ClientForm = ({
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {actionType === "create" ? "Nuevo Cliente" : "Editar Cliente"}
+        {actionType === "create" ? "Nuevo cliente" : "Editar cliente"}
       </h2>
 
       {actionType === "edit" && (
         <FormField
           id="client_status"
-          label={client_status ? "Desactivar Cliente" : "Activar Cliente"}
+          label={client_status ? "Desactivar cliente" : "Activar cliente"}
           type="checkbox"
           register={register("client_status")}
           component={FormInput}
@@ -149,13 +149,13 @@ const ClientForm = ({
 
           {/* Margen Comercial - Ahora disponible para ambos tipos de formulario */}
           <FormField
-            id="comercial_margin"
-            label="Margen Comercial"
-            register={register("comercial_margin")}
+            id="commercial_margin"
+            label="Margen comercial"
+            register={register("commercial_margin")}
             component={FormSelect}
             options={comercialMargins}
             defaultOption="Seleccione un margen"
-            error={errors.comercial_margin}
+            error={errors.commercial_margin}
             watch={watch}
             disabled={actionType === "edit" && !client_status}
           />
@@ -192,17 +192,17 @@ const ClientForm = ({
           {actionType === "edit" && (
             <>
               <FormField
-                id="comercial_registry"
-                label="Registro Mercantil"
+                id="commercial_registry"
+                label="Registro mercantil"
                 type="text"
                 placeholder="Ej: 1234567"
-                register={register("comercial_registry", {
+                register={register("commercial_registry", {
                   required: "Campo obligatorio. Por favor complételo",
                   validate: validateCommercialRegistry,
                 })}
                 component={FormInput}
                 watch={watch}
-                error={errors.comercial_registry}
+                error={errors.commercial_registry}
                 required
                 disabled={!client_status}
                 maxLength={7}
@@ -345,9 +345,9 @@ const ClientForm = ({
 
                 <FormField
                   id="zip_code"
-                  label="Código Postal"
+                  label="Código postal"
                   type="text"
-                  placeholder="Código Postal"
+                  placeholder="Código postal"
                   register={register("zip_code", {
                     required: "Campo obligatorio. Por favor complételo",
                     validate: (value) => validateZipCode(value, setValue),
@@ -398,7 +398,7 @@ const ClientForm = ({
               <div>
                 <FormField
                   id="contract_number"
-                  label="Número de Contrato"
+                  label="Número de contrato"
                   register={register("contract_number")}
                   component={FormInput}
                   disabled
@@ -406,7 +406,7 @@ const ClientForm = ({
 
                 <FormField
                   id="signature_date"
-                  label="Fecha de Firma"
+                  label="Fecha de firma"
                   register={register("signature_date")}
                   component={FormInput}
                   disabled
@@ -414,7 +414,7 @@ const ClientForm = ({
 
                 <FormField
                   id="expiration_date"
-                  label="Fecha de Vencimiento"
+                  label="Fecha de vencimiento"
                   register={register("expiration_date")}
                   component={FormInput}
                   disabled

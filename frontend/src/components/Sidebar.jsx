@@ -3,14 +3,19 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useNavigation } from "@/contexts/NavigationContext";
 import { menuItems } from "@/config/navigation";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const router = useRouter();
   const { isSidebarCollapsed, toggleSidebar } = useNavigation();
+
+  const handleNavigation = (href) => {
+    router.push(href);
+  };
 
   return (
     <aside
@@ -41,7 +46,14 @@ const Sidebar = () => {
         <ul>
           {menuItems.map(({ icon: Icon, text, href }) => (
             <li key={text}>
-              <Link href={href}>
+              <Link
+                href={href}
+                prefetch={true}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleNavigation(href);
+                }}
+              >
                 <div
                   className={`flex items-center px-4 py-2 hover:bg-gray-500 hover:bg-opacity-40 ${
                     pathname.startsWith(href) ? "bg-gray-500 bg-opacity-40" : ""

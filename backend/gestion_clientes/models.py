@@ -7,7 +7,7 @@ from .validators import (
     validate_code,
     validate_nip,
     validate_reeup,
-    validate_comercial_registry,
+    validate_commercial_registry,
     validate_contract_number,
     validate_phone,
 )
@@ -45,12 +45,12 @@ class Client(models.Model):
     zip_code = models.CharField(max_length=25, null=True, blank=True)
 
     client_email = models.EmailField(max_length=100, unique=True, null=True, blank=True)
-    comercial_registry = models.CharField(
+    commercial_registry = models.CharField(
         max_length=25,
         unique=True,
         null=True,
         blank=True,
-        validators=[validate_comercial_registry],
+        validators=[validate_commercial_registry],
     )
     client_phone = models.CharField(
         max_length=15, unique=True, validators=[validate_phone], null=True, blank=True
@@ -67,8 +67,8 @@ class Client(models.Model):
     pole = models.ForeignKey(
         "Pole", null=False, blank=False, on_delete=models.PROTECT
     )  # Relación 0..* a 1 con Polo
-    comercial_margin = models.ForeignKey(
-        "ComercialMargin", null=True, blank=True, on_delete=models.PROTECT
+    commercial_margin = models.ForeignKey(
+        "CommercialMargin", null=True, blank=True, on_delete=models.PROTECT
     )  # Relación 0..* a 1 con Margen Comercial
     representative = models.ForeignKey(
         "Representative", null=True, blank=True, on_delete=models.PROTECT
@@ -155,15 +155,15 @@ class Pole(models.Model):
 
 
 # Margen Comercial
-class ComercialMargin(models.Model):
-    comercial_margin = models.FloatField(
+class CommercialMargin(models.Model):
+    commercial_margin = models.FloatField(
         unique=False,
         null=False,
         blank=False,
         validators=[MinValueValidator(1), MaxValueValidator(100)],
         db_index=True,
     )
-    comercial_margin_status = models.BooleanField(default=True, db_index=True)
+    commercial_margin_status = models.BooleanField(default=True, db_index=True)
 
     def __str__(self):
-        return str(self.comercial_margin)
+        return str(self.commercial_margin)

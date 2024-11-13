@@ -1,5 +1,5 @@
 import django_filters
-from .models import Pole, Representative, ComercialMargin, Contract, Client
+from .models import Pole, Representative, CommercialMargin, Contract, Client
 
 
 class PoleFilter(django_filters.FilterSet):
@@ -21,12 +21,12 @@ class RepresentativeFilter(django_filters.FilterSet):
         fields = ["name", "last_name"]
 
 
-class ComercialMarginFilter(django_filters.FilterSet):
-    comercial_margin = django_filters.NumberFilter()
+class CommercialMarginFilter(django_filters.FilterSet):
+    commercial_margin = django_filters.NumberFilter()
 
     class Meta:
-        model = ComercialMargin
-        fields = ["comercial_margin"]
+        model = CommercialMargin
+        fields = ["commercial_margin"]
 
 
 class ContractFilter(django_filters.FilterSet):

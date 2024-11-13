@@ -15,6 +15,6 @@ validate_phone = RegexValidator(
 validate_contract_number = RegexValidator(
     regex=r"^TX-\d{5}", message="El número de contrato debe tener el formato TX-ddddd"
 )
-validate_comercial_registry = RegexValidator(
+validate_commercial_registry = RegexValidator(
     regex=r"^\d{7}", message="El código de registro mercantil debe tener 7 dígitos"
 )

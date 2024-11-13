@@ -39,7 +39,7 @@ export const useMargenesComerciales = () => {
       return margenesComerciales;
     }
     return margenesComerciales.filter((margenComercial) =>
-      margenComercial.comercial_margin.toString().includes(searchTerm)
+      margenComercial.commercial_margin.toString().includes(searchTerm)
     );
   }, [searchTerm, margenesComerciales]);
 
