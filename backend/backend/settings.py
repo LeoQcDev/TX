@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_filters",
     "django_extensions",
+    "drf_yasg",
 ]
 
 REST_FRAMEWORK = {
@@ -100,8 +101,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "economia_db",
-        "USER": "economia_user",
-        "PASSWORD": "Leo",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
         "HOST": "localhost",
         "PORT": "5432",
     }
