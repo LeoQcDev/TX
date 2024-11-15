@@ -5,6 +5,7 @@ from datetime import timedelta
 from gestion_clientes.models import Client
 
 
+
 def validate_date_range_one_day(value):
     return timezone.now() <= value <= timezone.now() + timedelta(days=1)
 
@@ -19,39 +20,24 @@ def validate_last_three_months(value):
     return month >= 10 and month <= 12
 
 
-class PlanImportacion(models.Model):
-    ESTADISTICA_CHOICES = [
-        ('CP', 'Corto Plazo'),
-        ('MP', 'Mediano Plazo'),
-        ('LP', 'Largo Plazo')
-    ]
 
-    cliente = models.OneToOneField(Client, on_delete=models.CASCADE)
-    codigo_pi = models.CharField(
-        max_length=20,
-        validators=[RegexValidator(regex=r'^\d+$', message='El código debe contener solo números')]
-    )
-    fecha_entrada_tecnotex = models.DateTimeField(
-        default=timezone.now,
-        validators=[validate_date_range_one_day]
-    )
-    importe_inicial = models.DecimalField(max_digits=10, decimal_places=2)
-    importe_actual = models.DecimalField(max_digits=10, decimal_places=2)
-    objeto = models.CharField(max_length=200)
-    estadistica = models.CharField(
-        max_length=2,
-        choices=ESTADISTICA_CHOICES
-    )
-    fecha_emision = models.DateTimeField(
-        default=timezone.now,
-        validators=[validate_date_range_two_days]
-    )
+class PlanImportacion(models.Model):
+    cliente = models.ForeignKey(Client, on_delete=models.CASCADE, unique_for_year='anio_pi')
+    fecha_emision = models.DateTimeField(default=timezone.now)
+    importe_pi = models.DecimalField(max_digits=10, decimal_places=2, null=False)
     anio_pi = models.IntegerField()
+    codigo_pi = models.CharField(max_length=8, unique=True, editable=False)
 
     def save(self, *args, **kwargs):
         if not self.pk:  # Si es una nueva instancia
-            self.importe_actual = self.importe_inicial
-            self.anio_pi = timezone.now().year + 1
+            # Generar el código PI automáticamente
+            last_plan = PlanImportacion.objects.filter(anio_pi=self.anio_pi).order_by('codigo_pi').last()
+            if last_plan:
+                last_code = int(last_plan.codigo_pi[4:])
+                new_code = f"{self.anio_pi}{last_code + 1:04d}"
+            else:
+                new_code = f"{self.anio_pi}0001"
+            self.codigo_pi = new_code
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -61,22 +47,31 @@ class PlanImportacion(models.Model):
         verbose_name = "Plan de Importación"
         verbose_name_plural = "Planes de Importación"
 
-
 class Extraplan(models.Model):
     plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE, related_name='extraplanes')
-    importe = models.DecimalField(max_digits=10, decimal_places=2)
+    codigo_extraplan = models.CharField(max_length=9, unique=True, editable=False,null=True)
+    fecha_emision = models.DateTimeField(default=timezone.now)
     motivo = models.TextField()
-    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    importe_extraplan = models.DecimalField(max_digits=10, decimal_places=2, null=False)
 
     def save(self, *args, **kwargs):
+        if not self.pk:  # Si es una nueva instancia
+            # Generar el código Extraplan automáticamente
+            last_extraplan = Extraplan.objects.filter(plan_importacion__anio_pi=self.plan_importacion.anio_pi).order_by('codigo_extraplan').last()
+            if last_extraplan:
+                last_code = int(last_extraplan.codigo_extraplan[5:])
+                new_code = f"{self.plan_importacion.anio_pi}E{last_code + 1:04d}"
+            else:
+                new_code = f"{self.plan_importacion.anio_pi}E0001"
+            self.codigo_extraplan = new_code
         super().save(*args, **kwargs)
-        # Actualizar el importe actual del plan de importación
-        self.plan_importacion.importe_actual += self.importe
-        self.plan_importacion.save()
 
     def __str__(self):
-        return f"Extraplan para {self.plan_importacion.codigo_pi}"
+        return f"Extraplan {self.codigo_extraplan} para {self.plan_importacion.codigo_pi}"
 
+    class Meta:
+        verbose_name = "Extraplan"
+        verbose_name_plural = "Extraplanes"
 
 class GenericoProductoPI(models.Model):
     codigo_pi = models.IntegerField(unique=True)
@@ -87,3 +82,47 @@ class GenericoProductoPI(models.Model):
     class Meta:
         verbose_name = "Genérico de Producto PI"
         verbose_name_plural = "Genéricos de Producto PI"
+
+class Objeto(models.Model):
+    nombre = models.CharField(max_length=100, unique=True)
+    descripcion = models.TextField()
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        verbose_name = "Objeto"
+        verbose_name_plural = "Objetos"
+
+class DesglosePI(models.Model):
+    plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE, related_name='desgloses')
+    objeto = models.ForeignKey(Objeto, on_delete=models.CASCADE)
+    importe_por_objeto = models.DecimalField(max_digits=10, decimal_places=2)
+    liquido = models.DecimalField(max_digits=10, decimal_places=2)
+    mediano_plazo = models.DecimalField(max_digits=10, decimal_places=2)
+    largo_plazo = models.DecimalField(max_digits=10, decimal_places=2)
+    desglose_total = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+
+    def save(self, *args, **kwargs):
+        self.desglose_total = self.liquido + self.mediano_plazo + self.largo_plazo
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Desglose para {self.plan_importacion.codigo_pi} - {self.objeto.nombre}"
+
+class DesgloseExtraplan(models.Model):
+    extraplan = models.ForeignKey(Extraplan, on_delete=models.CASCADE, related_name='desgloses')
+    objeto = models.ForeignKey(Objeto, on_delete=models.CASCADE)
+    importe_por_objeto = models.DecimalField(max_digits=10, decimal_places=2)
+    liquido = models.DecimalField(max_digits=10, decimal_places=2)
+    mediano_plazo = models.DecimalField(max_digits=10, decimal_places=2)
+    largo_plazo = models.DecimalField(max_digits=10, decimal_places=2)
+    desglose_total = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+
+    def save(self, *args, **kwargs):
+        self.desglose_total = self.liquido + self.mediano_plazo + self.largo_plazo
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Desglose para {self.extraplan.codigo_extraplan} - {self.objeto.nombre}"
+
