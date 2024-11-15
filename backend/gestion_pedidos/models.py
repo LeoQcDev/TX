@@ -14,6 +14,35 @@ def validate_date_range_three_days(value):
         raise ValidationError('La fecha no puede ser más de 3 días antes que la actual')
 
 
+class UnidadMedida(models.Model):
+    nombre = models.CharField(max_length=100)
+    denominacion = models.CharField(max_length=10)
+
+    def __str__(self):
+        return f"{self.nombre} ({self.denominacion})"
+
+    class Meta:
+        verbose_name = "Unidad de Medida"
+        verbose_name_plural = "Unidades de Medida"
+
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=200)
+    codigo = models.IntegerField()
+    descripcion_producto = models.TextField()
+    cantidad = models.IntegerField()
+    precio_unitario = models.FloatField()
+    especificaciones_tecnicas = models.TextField()
+    unidad_medida = models.ForeignKey(UnidadMedida, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.codigo} - {self.nombre}"
+
+    class Meta:
+        verbose_name = "Producto"
+        verbose_name_plural = "Productos"
+
+
 class GenericoProducto(models.Model):
     nombre = models.CharField(max_length=200)
     grupo = models.CharField(max_length=100)
@@ -76,3 +105,17 @@ class Pedido(models.Model):
     class Meta:
         verbose_name = "Pedido"
         verbose_name_plural = "Pedidos"
+
+
+class Posicion(models.Model):
+    pedido = models.ForeignKey(Pedido, related_name='posiciones', on_delete=models.CASCADE)
+    aprobacion = models.ForeignKey(Aprobacion, on_delete=models.CASCADE)
+    codigo_aprobacion = models.ForeignKey(CodigoAprobacion, on_delete=models.CASCADE)
+    productos = models.ManyToManyField(Producto)
+
+    def __str__(self):
+        return f"Posición de {self.pedido.numero_711}"
+
+    class Meta:
+        verbose_name = "Posición"
+        verbose_name_plural = "Posiciones"

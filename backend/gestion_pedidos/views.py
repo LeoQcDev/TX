@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import GenericoProducto, UnidadCompra, Pedido
-from .serializers import GenericoProductoSerializer, UnidadCompraSerializer, PedidoSerializer
+from .models import GenericoProducto, UnidadCompra, Pedido, Posicion, Producto, UnidadMedida
+from .serializers import GenericoProductoSerializer, UnidadCompraSerializer, PedidoSerializer, PosicionSerializer, ProductoSerializer, UnidadMedidaSerializer
 
 
 class GenericoProductoViewSet(viewsets.ModelViewSet):
@@ -41,3 +41,19 @@ class PedidoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(Pedido_type=Pedido_type)
 
         return queryset 
+    
+
+class PosicionViewSet(viewsets.ModelViewSet):
+    queryset = Posicion.objects.all()
+    serializer_class = PosicionSerializer
+
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+
+
+class UnidadMedidaViewSet(viewsets.ModelViewSet):
+    queryset = UnidadMedida.objects.all()
+    serializer_class = UnidadMedidaSerializer
+
