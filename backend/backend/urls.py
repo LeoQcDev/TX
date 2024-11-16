@@ -37,6 +37,7 @@ urlpatterns = [
     path("api/", include("gestion_clientes.urls")),
     path("api/", include("gestion_pedidos.urls")),
     path("api/", include("gestion_plan_importacion.urls")),
+    path("api/", include("gestion_aprobaciones.urls")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('', RedirectView.as_view(url='swagger/', permanent=False), name='index'),
 ]

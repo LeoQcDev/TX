@@ -9,28 +9,37 @@ class Financiero(models.Model):
 
     def __str__(self):
         return self.name
-
+    
+    class Meta:
+        verbose_name = "Financiero"
+        verbose_name_plural = "Financieros"
 
 class CasaFinanciera(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        verbose_name = "Casa Financiera"
+        verbose_name_plural = "Casas Financieras"
 
 class TipoFactura(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        verbose_name = "Tipo de Factura"
+        verbose_name_plural = "Tipos de Facturas"
 
 class Objeto(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
-
+    class Meta:
+        verbose_name = "Objeto"
+        verbose_name_plural = "Objetos"
 
 class CodigoAprobacion(models.Model):
     codigo = models.CharField(max_length=100)
@@ -45,7 +54,9 @@ class CodigoAprobacion(models.Model):
 
     def __str__(self):
         return self.codigo
-
+    class Meta:
+        verbose_name = "Codigo de Aprobacion"
+        verbose_name_plural = "Codigos de Aprobaciones"
 
 class Aprobacion(models.Model):
     numero_aprobacion = models.CharField(max_length=100, null=False)
@@ -76,3 +87,6 @@ class Aprobacion(models.Model):
 
     def __str__(self):
         return self.numero_aprobacion
+    class Meta:
+        verbose_name = "Aprobacion"
+        verbose_name_plural = "Aprobaciones"

@@ -14,16 +14,8 @@ class PlanImportacionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PlanImportacion
-        fields = [
-            'id',
-            'cliente',
-            'cliente_id',
-            'codigo_pi',
-            'fecha_emision',
-            'importe_pi',
-            'anio_pi',
-            'extraplanes',
-        ]
+        fields = '__all__'
+
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
@@ -38,42 +30,25 @@ class PlanImportacionSerializer(serializers.ModelSerializer):
 class ExtraplanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Extraplan
-        fields = ['id', 'codigo_extraplan', 'motivo', 'fecha_emision', 'importe_extraplan', 'plan_importacion']
+        fields = '__all__'
 
 class GenericoProductoPISerializer(serializers.ModelSerializer):
     class Meta:
         model = GenericoProductoPI
-        fields = ['id', 'codigo_pi']
+        fields = '__all__'
 
 class ObjetoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Objeto
-        fields = ['id', 'nombre', 'descripcion']
+        fields = '__all__'
+        ref_name = "PlanImportacionObjeto"
 
 class DesglosePISerializer(serializers.ModelSerializer):
     class Meta:
         model = DesglosePI
-        fields = [
-            'id',
-            'plan_importacion',
-            'objeto',
-            'importe_por_objeto',
-            'liquido',
-            'mediano_plazo',
-            'largo_plazo',
-            'desglose_total',
-        ]
+        fields = '__all__'
 
 class DesgloseExtraplanSerializer(serializers.ModelSerializer):
     class Meta:
         model = DesgloseExtraplan
-        fields = [
-            'id',
-            'extraplan',
-            'objeto',
-            'importe_por_objeto',
-            'liquido',
-            'mediano_plazo',
-            'largo_plazo',
-            'desglose_total',
-        ]
+        fields = '__all__'

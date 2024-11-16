@@ -16,7 +16,7 @@ const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel })
     defaultValues: initialData,
   });
 
-  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones } =
+  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones, codigosAprobacion } =
     usePedidoFormData();
 
   const onSubmit = async (data) => {
@@ -45,6 +45,7 @@ const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel })
       genericosProducto={genericosProducto}
       unidadesCompra={unidadesCompra}
       aprobaciones={aprobaciones}
+      codigosAprobacion={codigosAprobacion}
     />
   );
 };

@@ -83,13 +83,15 @@ class Pedido(models.Model):
     )
     plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE)
     financiamiento = models.CharField(max_length=100)
-    aprobacion = models.ForeignKey(Aprobacion, on_delete=models.CASCADE)
+    aprobaciones = models.ManyToManyField(
+        Aprobacion,
+        related_name='pedidos',
+        verbose_name="Aprobaciones"
+    )
     codigos_aprobacion = models.ManyToManyField(
         'gestion_aprobaciones.CodigoAprobacion',
         related_name='pedidos_relacionados'
     )
-    
-    # Información de pedido
     presentador = models.CharField(max_length=200)
     tipo_pedido = models.CharField(max_length=100)
     unidad_compra = models.ForeignKey(UnidadCompra, on_delete=models.CASCADE)

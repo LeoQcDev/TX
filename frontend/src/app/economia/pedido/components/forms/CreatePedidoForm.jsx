@@ -14,7 +14,7 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
     control,
   } = useForm();
 
-  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones } =
+  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones, codigosAprobacion } =
     usePedidoFormData();
 
   const onSubmit = async (data) => {
@@ -43,6 +43,7 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
       genericosProducto={genericosProducto}
       unidadesCompra={unidadesCompra}
       aprobaciones={aprobaciones}
+      codigosAprobacion={codigosAprobacion}
     />
   );
 };
