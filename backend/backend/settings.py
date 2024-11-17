@@ -112,8 +112,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "NAME": "economia_db",
-        "USER": "postgres",
-        "PASSWORD": "postgres",
+        "USER": "economia_user",
+        "PASSWORD": "Leo",
         "HOST": "localhost",
         "PORT": "5432",
     }

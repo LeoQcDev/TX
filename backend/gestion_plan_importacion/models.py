@@ -45,6 +45,13 @@ class PlanImportacion(models.Model):
         verbose_name = "Plan de Importación"
         verbose_name_plural = "Planes de Importación"
 
+class Objeto(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Extraplan(models.Model):
     plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE, related_name='extraplanes')
     codigo_extraplan = models.CharField(max_length=9, unique=True, editable=False,null=True)
