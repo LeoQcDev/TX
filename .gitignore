@@ -13,7 +13,7 @@ Thumbs.db
 # Ignorar archivos de entorno en el backend
 /backend/.env.*
 /backend/env
-
+venv
 # Ignorar migraciones
 /backend/gestion_clientes/migrations
 
