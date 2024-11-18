@@ -27,14 +27,7 @@ const PedidoForm = ({
   planesImportacion,
   setValue
 }) => {
-  console.log('Form Data:', {
-    clientes,
-    genericosProducto,
-    unidadesCompra,
-    aprobaciones,
-    codigosAprobacion,
-    planesImportacion
-  });
+
 
   const [approvalRows, setApprovalRows] = useState([{ approval: "", codes: [""] }]);
   const [selectedApprovals, setSelectedApprovals] = useState({});
@@ -158,6 +151,17 @@ const PedidoForm = ({
       }));
   };
 
+  useEffect(() => {
+    console.log('PedidoForm - Form Values:', {
+      cliente: watch('cliente'),
+      generico_producto: watch('generico_producto'),
+      unidad_compra: watch('unidad_compra'),
+      plan_importacion: watch('plan_importacion'),
+      aprobaciones: watch('approvals'),
+      codigos_aprobacion: watch('approvals.0.codes')
+    });
+  }, [watch]);
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
@@ -200,52 +204,56 @@ const PedidoForm = ({
             id="cliente"
             label="Cliente"
             register={register("cliente", {
-              required: "Debe seleccionar un cliente",
+              required: "Debe seleccionar un cliente"
             })}
             component={FormSelect}
             options={clientes}
             defaultOption="Seleccione un cliente"
             error={errors.cliente}
             required
+            value={watch("cliente")}
           />
 
           <FormField
             id="generico_producto"
-            label="Genérico de Producto"
+            label="Genérico"
             register={register("generico_producto", {
-              required: "Debe seleccionar un genérico",
+              required: "Debe seleccionar un genérico"
             })}
             component={FormSelect}
             options={genericosProducto}
             defaultOption="Seleccione un genérico"
             error={errors.generico_producto}
             required
+            value={watch("generico_producto")}
           />
 
           <FormField
             id="unidad_compra"
             label="Unidad de Compra"
             register={register("unidad_compra", {
-              required: "Debe seleccionar una unidad",
+              required: "Debe seleccionar una unidad"
             })}
             component={FormSelect}
             options={unidadesCompra}
             defaultOption="Seleccione una unidad"
             error={errors.unidad_compra}
             required
+            value={watch("unidad_compra")}
           />
 
           <FormField
             id="plan_importacion"
             label="Plan de Importación"
             register={register("plan_importacion", {
-              required: "Debe seleccionar un plan de importación",
+              required: "Debe seleccionar un plan"
             })}
             component={FormSelect}
             options={planesImportacion}
             defaultOption="Seleccione un plan"
             error={errors.plan_importacion}
             required
+            value={watch("plan_importacion")}
           />
 
           <FormField

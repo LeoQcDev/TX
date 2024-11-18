@@ -15,6 +15,20 @@ const PedidoFormContainer = ({
 }) => {
   const [showPosicionForm, setShowPosicionForm] = useState(false);
 
+  const formattedInitialData = {
+    ...initialData,
+    cliente: initialData.cliente?.id?.toString(),
+    generico_producto: initialData.generico_producto?.id?.toString(),
+    unidad_compra: initialData.unidad_compra?.id?.toString(),
+    plan_importacion: initialData.plan_importacion?.toString(),
+    fecha_entrada_tecnotex: initialData.fecha_entrada_tecnotex || new Date().toISOString().split('T')[0],
+    fecha_presentado: initialData.fecha_presentado || new Date().toISOString().split('T')[0],
+    aprobaciones: Array.isArray(initialData.aprobaciones) ? initialData.aprobaciones : [],
+    codigos_aprobacion: Array.isArray(initialData.codigos_aprobacion) ? initialData.codigos_aprobacion : []
+  };
+
+  console.log('PedidoFormContainer - Formatted Data:', formattedInitialData);
+
   const {
     register,
     handleSubmit,
@@ -26,11 +40,7 @@ const PedidoFormContainer = ({
     reset,
     setError,
   } = useForm({
-    defaultValues: {
-      ...initialData,
-      fecha_entrada_tecnotex: initialData.fecha_entrada_tecnotex || new Date().toISOString().split('T')[0],
-      fecha_presentado: initialData.fecha_presentado || new Date().toISOString().split('T')[0],
-    }
+    defaultValues: formattedInitialData
   });
 
   const { 
@@ -43,17 +53,16 @@ const PedidoFormContainer = ({
     planesImportacion,
     productos 
   } = usePedidoFormData();
-  console.log(aprobaciones);
   
   const handleFormSubmit = async (event) => {
-    console.log("Entro a handleFormSubmit");
+    
     
     try {
       event.preventDefault();
       
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData);
-      console.log("Data original:", data);
+      
       
       const fechaEntrada = data.fecha_entrada_tecnotex || new Date().toISOString().split('T')[0];
       const fechaPresentado = data.fecha_presentado || new Date().toISOString().split('T')[0];
@@ -72,7 +81,7 @@ const PedidoFormContainer = ({
         codigos_aprobacion: [data["approvals.0.codes.0"]].filter(Boolean).map(c => parseInt(c))
       };
 
-      console.log("formattedData:", formattedData);
+      
 
       if (actionType === "create") {
         await createPedido(formattedData);

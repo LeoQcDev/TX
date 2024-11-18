@@ -2,7 +2,7 @@ import { fetchData, createData, updateDataPartial, deleteData } from "@/services
 
 export const fetchAprobaciones = async () => {
   const response = await fetchData("/aprobaciones/");
-  console.log('Aprobaciones raw data:', response);
+  
   return response;
 };
 

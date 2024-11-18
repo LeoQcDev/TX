@@ -38,15 +38,7 @@ export const usePedidoFormData = () => {
           fetchProductos()
         ]);
 
-        console.log('Raw Data:', {
-          clientesData,
-          genericosData,
-          unidadesData,
-          aprobacionesData,
-          codigosData,
-          planesData,
-          productosData
-        });
+
 
         const clientesFormateados = clientesData.map(cliente => ({
           id: cliente.id,
@@ -88,15 +80,7 @@ export const usePedidoFormData = () => {
           name: producto.nombre
         }));
 
-        console.log('Formatted Data:', {
-          clientesFormateados,
-          genericosFormateados,
-          unidadesFormateadas,
-          aprobacionesFormateadas,
-          codigosAprobacionFormateados,
-          planesFormateados,
-          productosFormateados
-        });
+        
 
         setClientes(clientesFormateados);
         setGenericosProducto(genericosFormateados);

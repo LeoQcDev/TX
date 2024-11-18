@@ -6,6 +6,13 @@ import { usePedidoFormData } from "../hooks/usePedidoFormData";
 import CreatePosicionForm from "./CreatePosicionForm";
 
 const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel }) => {
+  console.log('EditPedidoForm - Raw Initial Data:', {
+    ...initialData,
+    cliente: JSON.stringify(initialData.cliente),
+    generico_producto: JSON.stringify(initialData.generico_producto),
+    unidad_compra: JSON.stringify(initialData.unidad_compra)
+  });
+
   const [showPosicionForm, setShowPosicionForm] = useState(false);
 
   const {

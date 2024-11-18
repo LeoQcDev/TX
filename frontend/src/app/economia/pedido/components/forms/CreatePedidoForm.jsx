@@ -30,7 +30,6 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
   } = usePedidoFormData();
 
   const onSubmit = async (data) => {
-    console.log("Entro a onSubmit");
     try {
       
       const formattedData = {
@@ -49,7 +48,6 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
           approval.codes.map(code => parseInt(code))
         )
       };
-      console.log("formattedData", formattedData);
       await createPedido(formattedData);
       onSuccess();
     } catch (error) {
