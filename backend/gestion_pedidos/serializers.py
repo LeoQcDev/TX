@@ -14,38 +14,10 @@ class UnidadCompraSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class PedidoSerializer(serializers.ModelSerializer):
-    cliente = ClientSerializer(read_only=True)
-    generico_producto = GenericoProductoSerializer(read_only=True)
-    unidad_compra = UnidadCompraSerializer(read_only=True)
-    
-    # Para las operaciones de escritura, necesitamos los campos de ID
-    cliente_id = serializers.PrimaryKeyRelatedField(
-        source='cliente',
-        queryset=Client.objects.all(),
-        write_only=True
-    )
-    generico_producto_id = serializers.PrimaryKeyRelatedField(
-        source='generico_producto',
-        queryset=GenericoProducto.objects.all(),
-        write_only=True
-    )
-    unidad_compra_id = serializers.PrimaryKeyRelatedField(
-        source='unidad_compra',
-        queryset=UnidadCompra.objects.all(),
-        write_only=True
-    )
 
     class Meta:
         model = Pedido
-        fields = [
-            'id', 'numero_711', 'fecha_entrada_tecnotex', 'plan_importacion',
-            'financiamiento', 'aprobaciones', 'codigos_aprobacion', 'presentador',
-            'tipo_pedido', 'fecha_presentado',
-            # Campos anidados para lectura
-            'cliente', 'generico_producto', 'unidad_compra',
-            # Campos ID para escritura
-            'cliente_id', 'generico_producto_id', 'unidad_compra_id'
-        ]
+        fields = '__all__'
 
 class PosicionSerializer(serializers.ModelSerializer):
     class Meta:
