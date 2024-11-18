@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from gestion_clientes.models import Client
@@ -102,12 +102,11 @@ class Pedido(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        is_new = self._state.adding  # Verifica si es un nuevo objeto
-        super().save(*args, **kwargs)  # Primero guardamos para obtener el ID
+        skip_recalculation = kwargs.pop('skip_recalculation', False)
+        super().save(*args, **kwargs)
         
-        if not is_new:  # Solo calculamos el financiamiento si no es nuevo
-            self.financiamiento = sum(codigo.aprobado for codigo in self.codigos_aprobacion.all())
-            super().save(update_fields=['financiamiento'])  # Actualizamos solo el campo financiamiento
+        if not skip_recalculation:
+            self.recalcular_financiamiento()
 
     def __str__(self):
         return f"Pedido {self.numero_711} - {self.cliente.name}"
@@ -115,6 +114,10 @@ class Pedido(models.Model):
     class Meta:
         verbose_name = "Pedido"
         verbose_name_plural = "Pedidos"
+
+    def recalcular_financiamiento(self):
+        self.financiamiento = sum(codigo.aprobado for codigo in self.codigos_aprobacion.all())
+        self.save(skip_recalculation=True, update_fields=['financiamiento'])
 
 
 class Posicion(models.Model):

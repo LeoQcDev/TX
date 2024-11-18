@@ -55,14 +55,11 @@ const PedidoFormContainer = ({
   } = usePedidoFormData();
   
   const handleFormSubmit = async (event) => {
-    
-    
     try {
       event.preventDefault();
       
       const formData = new FormData(event.target);
       const data = Object.fromEntries(formData);
-      
       
       const fechaEntrada = data.fecha_entrada_tecnotex || new Date().toISOString().split('T')[0];
       const fechaPresentado = data.fecha_presentado || new Date().toISOString().split('T')[0];
@@ -77,11 +74,16 @@ const PedidoFormContainer = ({
         unidad_compra: parseInt(data.unidad_compra),
         presentador: data.presentador,
         tipo_pedido: data.tipo_pedido,
-        aprobaciones: [data["approvals.0.approval"]].filter(Boolean).map(a => parseInt(a)),
-        codigos_aprobacion: [data["approvals.0.codes.0"]].filter(Boolean).map(c => parseInt(c))
+        aprobaciones: Object.keys(data)
+          .filter(key => key.match(/^approvals\.\d+\.approval$/))
+          .map(key => parseInt(data[key])),
+        codigos_aprobacion: Object.keys(data)
+          .filter(key => key.match(/^approvals\.\d+\.codes\.\d+$/))
+          .map(key => parseInt(data[key]))
+          .filter(Boolean)
       };
 
-      
+      console.log('Datos que se enviarán al backend:', JSON.stringify(formattedData, null, 2));
 
       if (actionType === "create") {
         await createPedido(formattedData);

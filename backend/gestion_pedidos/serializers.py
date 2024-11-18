@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import GenericoProducto, UnidadCompra, Pedido, Posicion, Producto, UnidadMedida
 from gestion_clientes.serializers import ClientSerializer
 from gestion_clientes.models import Client
-
+from gestion_plan_importacion.serializers import PlanImportacionSerializer
+from gestion_aprobaciones.serializers import AprobacionSerializer, CodigoAprobacionSerializer
 class GenericoProductoSerializer(serializers.ModelSerializer):
     class Meta:
         model = GenericoProducto
@@ -33,3 +34,15 @@ class UnidadMedidaSerializer(serializers.ModelSerializer):
     class Meta:
         model = UnidadMedida
         fields = '__all__'
+
+class PedidoReadSerializer(PedidoSerializer):
+    cliente = ClientSerializer()
+    generico_producto = GenericoProductoSerializer()
+    unidad_compra = UnidadCompraSerializer()
+    plan_importacion = PlanImportacionSerializer()
+    aprobaciones = AprobacionSerializer(many=True)
+    codigos_aprobacion = CodigoAprobacionSerializer(many=True)
+    
+    class Meta(PedidoSerializer.Meta):
+        ref_name = 'PedidoRead'
+        depth = 1
