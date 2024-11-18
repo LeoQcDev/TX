@@ -27,13 +27,13 @@ const PedidoTable = ({
       {pedido.numero_711}
     </td>,
     <td key="cliente" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.cliente?.denominacion || 'N/A'}
+      {pedido.cliente?.name || 'N/A'}
     </td>,
     <td key="generico" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.generico_producto?.denominacion || 'N/A'}
+      {pedido.generico_producto?.nombre || 'N/A'}
     </td>,
     <td key="unidad" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.unidad_compra?.denominacion || 'N/A'}
+      {pedido.unidad_compra?.nombre_departamento || 'N/A'}
     </td>,
     <td key="financiamiento" className="px-6 py-4 text-center whitespace-nowrap">
       {typeof pedido.financiamiento === 'number' 
