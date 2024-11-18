@@ -18,25 +18,27 @@ const PedidoTable = ({
     "Unidad de Compra",
     "Financiamiento",
     "Presentador",
-    "Tipo de Pedido",
-    "Fecha de Entrada",
+    "Tipo",
+    "Fecha Entrada"
   ];
 
-  const renderRow = (pedido, searchTerm) => [
+  const renderCells = (pedido) => [
     <td key="numero" className="px-6 py-4 text-center whitespace-nowrap">
-      {highlightMatch(pedido.numero_711, searchTerm)}
+      {pedido.numero_711}
     </td>,
     <td key="cliente" className="px-6 py-4 text-center whitespace-nowrap">
-      {highlightMatch(pedido.cliente?.name, searchTerm)}
+      {pedido.cliente?.denominacion || 'N/A'}
     </td>,
     <td key="generico" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.generico_producto?.name}
+      {pedido.generico_producto?.denominacion || 'N/A'}
     </td>,
     <td key="unidad" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.unidad_compra?.name}
+      {pedido.unidad_compra?.denominacion || 'N/A'}
     </td>,
     <td key="financiamiento" className="px-6 py-4 text-center whitespace-nowrap">
-      {pedido.financiamiento}
+      {typeof pedido.financiamiento === 'number' 
+        ? pedido.financiamiento.toFixed(2) 
+        : pedido.financiamiento || '0.00'}
     </td>,
     <td key="presentador" className="px-6 py-4 text-center whitespace-nowrap">
       {pedido.presentador}
@@ -58,7 +60,7 @@ const PedidoTable = ({
       onEditClick={onEditClick}
       onRowDoubleClick={onPedidoDoubleClick}
       searchTerm={searchTerm}
-      rowRenderer={renderRow}
+      rowRenderer={renderCells}
     />
   );
 };

@@ -82,7 +82,7 @@ class Pedido(models.Model):
         validators=[validate_date_range_three_days]
     )
     plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE)
-    financiamiento = models.CharField(max_length=100)
+    financiamiento = models.FloatField(default=0, editable=False)
     aprobaciones = models.ManyToManyField(
         Aprobacion,
         related_name='pedidos',
@@ -100,6 +100,14 @@ class Pedido(models.Model):
         default=timezone.now,
         validators=[validate_date_range_three_days]
     )
+
+    def save(self, *args, **kwargs):
+        is_new = self._state.adding  # Verifica si es un nuevo objeto
+        super().save(*args, **kwargs)  # Primero guardamos para obtener el ID
+        
+        if not is_new:  # Solo calculamos el financiamiento si no es nuevo
+            self.financiamiento = sum(codigo.aprobado for codigo in self.codigos_aprobacion.all())
+            super().save(update_fields=['financiamiento'])  # Actualizamos solo el campo financiamiento
 
     def __str__(self):
         return f"Pedido {self.numero_711} - {self.cliente.name}"

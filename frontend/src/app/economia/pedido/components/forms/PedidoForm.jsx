@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import FormButtons from "@/components/form/FormButtons";
 import FormCancelButton from "@/components/form/FormCancelButton";
 import FormConfirmButton from "@/components/form/FormConfirmButton";
@@ -6,8 +6,10 @@ import FormField from "@/components/form/FormField";
 import FormSelect from "@/components/form/FormSelect";
 import FormInput from "@/components/form/FormInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/button";
 
 const PedidoForm = ({
+  onSubmit,
   handleSubmit,
   register,
   errors,
@@ -15,15 +17,47 @@ const PedidoForm = ({
   isSubmitting,
   actionType,
   onCancel,
+  onCreatePosicion,
+  idPedido,
   clientes,
   genericosProducto,
   unidadesCompra,
   aprobaciones,
   codigosAprobacion,
+  planesImportacion,
+  setValue
 }) => {
+  console.log('Form Data:', {
+    clientes,
+    genericosProducto,
+    unidadesCompra,
+    aprobaciones,
+    codigosAprobacion,
+    planesImportacion
+  });
+
   const [approvalRows, setApprovalRows] = useState([{ approval: "", codes: [""] }]);
   const [selectedApprovals, setSelectedApprovals] = useState({});
   const [selectedCodes, setSelectedCodes] = useState({});
+  const [totalFinanciamiento, setTotalFinanciamiento] = useState(0);
+
+  const calculateFinanciamiento = useCallback(() => {
+    let total = 0;
+    Object.values(selectedCodes).forEach(rowCodes => {
+      Object.values(rowCodes).forEach(codeId => {
+        const selectedCode = codigosAprobacion.find(c => c.id.toString() === codeId);
+        if (selectedCode) {
+          total += selectedCode.aprobado || 0;
+        }
+      });
+    });
+    setTotalFinanciamiento(total);
+    setValue('financiamiento', total.toFixed(2));
+  }, [selectedCodes, codigosAprobacion, setValue]);
+
+  useEffect(() => {
+    calculateFinanciamiento();
+  }, [selectedCodes, calculateFinanciamiento]);
 
   const addApprovalRow = () => {
     setApprovalRows([...approvalRows, { approval: "", codes: [""] }]);
@@ -32,6 +66,18 @@ const PedidoForm = ({
   const removeApprovalRow = (index) => {
     const newRows = approvalRows.filter((_, i) => i !== index);
     setApprovalRows(newRows);
+    
+    setSelectedCodes(prev => {
+      const newCodes = { ...prev };
+      delete newCodes[index];
+      return newCodes;
+    });
+    
+    setSelectedApprovals(prev => {
+      const newApprovals = { ...prev };
+      delete newApprovals[index];
+      return newApprovals;
+    });
   };
 
   const addCodeField = (rowIndex) => {
@@ -44,6 +90,15 @@ const PedidoForm = ({
     const newRows = [...approvalRows];
     newRows[rowIndex].codes = newRows[rowIndex].codes.filter((_, i) => i !== codeIndex);
     setApprovalRows(newRows);
+    
+    setSelectedCodes(prev => {
+      const newCodes = { ...prev };
+      if (newCodes[rowIndex]) {
+        const { [codeIndex]: removedCode, ...rest } = newCodes[rowIndex];
+        newCodes[rowIndex] = rest;
+      }
+      return newCodes;
+    });
   };
 
   const isApprovalSelected = (approvalId) => {
@@ -74,12 +129,33 @@ const PedidoForm = ({
     }));
   };
 
+  const getSelectedCodesForRow = (rowIndex) => {
+    if (!selectedCodes[rowIndex]) return [];
+    return Object.values(selectedCodes[rowIndex]);
+  };
+
   const getFilteredCodes = (rowIndex, inputId) => {
-    const currentValue = document.getElementById(inputId)?.value || '';
-    return (codigosAprobacion || []).filter(codigo => 
-      !Object.values(selectedCodes?.[rowIndex] || {}).includes(codigo.codigo) || 
-      codigo.codigo === currentValue
-    );
+    const selectedCodesInRow = getSelectedCodesForRow(rowIndex);
+    const currentValue = document.getElementById(inputId)?.value;
+    const selectedApprovalId = selectedApprovals[rowIndex];
+    
+    if (!selectedApprovalId) return [];
+    
+    const selectedApproval = aprobaciones.find(apr => apr.id.toString() === selectedApprovalId);
+    if (!selectedApproval || !selectedApproval.codigos_aprobacion) return [];
+    
+    return codigosAprobacion
+      .filter(codigo => 
+        // El código pertenece a la aprobación seleccionada
+        selectedApproval.codigos_aprobacion.includes(codigo.id) &&
+        // Y o bien es el código actualmente seleccionado o no está seleccionado en esta fila
+        (codigo.id.toString() === currentValue || 
+         !selectedCodesInRow.includes(codigo.id.toString()))
+      )
+      .map(codigo => ({
+        id: codigo.id,
+        name: `${codigo.codigo} - ${codigo.aprobado.toFixed(2)}`
+      }));
   };
 
   return (
@@ -87,6 +163,19 @@ const PedidoForm = ({
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         {actionType === "create" ? "Nuevo pedido" : "Editar pedido"}
       </h2>
+
+      {actionType === "edit" && (
+        <div className="mb-6">
+          <Button
+            type="button"
+            onClick={() => onCreatePosicion(idPedido)}
+            className="flex items-center gap-2 bg-blackRedTX hover:bg-blackRedTX/90 text-white"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Crear Posición
+          </Button>
+        </div>
+      )}
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -147,15 +236,27 @@ const PedidoForm = ({
           />
 
           <FormField
+            id="plan_importacion"
+            label="Plan de Importación"
+            register={register("plan_importacion", {
+              required: "Debe seleccionar un plan de importación",
+            })}
+            component={FormSelect}
+            options={planesImportacion}
+            defaultOption="Seleccione un plan"
+            error={errors.plan_importacion}
+            required
+          />
+
+          <FormField
             id="financiamiento"
             label="Financiamiento"
             type="text"
-            register={register("financiamiento", {
-              required: "Campo obligatorio",
-            })}
+            register={register("financiamiento")}
             component={FormInput}
             error={errors.financiamiento}
-            required
+            disabled={true}
+            value={totalFinanciamiento.toFixed(2)}
           />
 
           <FormField
@@ -190,8 +291,13 @@ const PedidoForm = ({
               <div key={rowIndex} className="flex gap-4 items-start">
                 <div className="w-1/3">
                   <FormSelect
-                    options={aprobaciones.filter(apr => !isApprovalSelected(apr.id.toString()) || 
-                      selectedApprovals[rowIndex] === apr.id.toString())}
+                    options={aprobaciones
+                      .filter(apr => !isApprovalSelected(apr.id.toString()) || 
+                        selectedApprovals[rowIndex] === apr.id.toString())
+                      .map(apr => ({
+                        id: apr.id,
+                        name: apr.name
+                      }))}
                     defaultOption="Seleccione una aprobación"
                     {...register(`approvals.${rowIndex}.approval`, {
                       required: "Seleccione una aprobación",
@@ -251,7 +357,10 @@ const PedidoForm = ({
         </div>
 
         <FormButtons>
-          <FormCancelButton onCancel={onCancel} isSubmitting={isSubmitting} />
+          <FormCancelButton 
+            onCancel={onCancel} 
+            isSubmitting={isSubmitting} 
+          />
           <FormConfirmButton
             isSubmitting={isSubmitting}
             action={actionType === "create" ? "crear" : "actualizar"}

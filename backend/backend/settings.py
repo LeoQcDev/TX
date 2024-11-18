@@ -111,9 +111,9 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "economia_db",
-        "USER": "economia_user",
-        "PASSWORD": "Leo",
+        "NAME": "economia_2db",
+        "USER": "postgres",
+        "PASSWORD": "postgres",
         "HOST": "localhost",
         "PORT": "5432",
     }

@@ -12,14 +12,45 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
     watch,
     setValue,
     control,
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      fecha_entrada_tecnotex: new Date().toISOString().split('T')[0],
+      fecha_presentado: new Date().toISOString().split('T')[0],
+    }
+  });
 
-  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones, codigosAprobacion } =
-    usePedidoFormData();
+  const { 
+    isLoading, 
+    clientes, 
+    genericosProducto, 
+    unidadesCompra, 
+    aprobaciones, 
+    codigosAprobacion,
+    planesImportacion 
+  } = usePedidoFormData();
 
   const onSubmit = async (data) => {
+    console.log("Entro a onSubmit");
     try {
-      await createPedido(data);
+      
+      const formattedData = {
+        cliente: parseInt(data.cliente),
+        numero_711: data.numero_711,
+        fecha_entrada_tecnotex: new Date(data.fecha_entrada_tecnotex).toISOString(),
+        fecha_presentado: new Date(data.fecha_presentado).toISOString(),
+        plan_importacion: parseInt(data.plan_importacion),
+        generico_producto: parseInt(data.generico_producto),
+        unidad_compra: parseInt(data.unidad_compra),
+        presentador: data.presentador,
+        tipo_pedido: data.tipo_pedido,
+        // Don't send financiamiento as it's calculated on the backend
+        aprobaciones: data.approvals.map(approval => parseInt(approval.approval)),
+        codigos_aprobacion: data.approvals.flatMap(approval => 
+          approval.codes.map(code => parseInt(code))
+        )
+      };
+      console.log("formattedData", formattedData);
+      await createPedido(formattedData);
       onSuccess();
     } catch (error) {
       onError(
@@ -44,6 +75,7 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
       unidadesCompra={unidadesCompra}
       aprobaciones={aprobaciones}
       codigosAprobacion={codigosAprobacion}
+      planesImportacion={planesImportacion}
     />
   );
 };

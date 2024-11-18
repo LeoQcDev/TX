@@ -1,7 +1,9 @@
 import { fetchData, createData, updateDataPartial, deleteData } from "@/services/api";
 
 export const fetchAprobaciones = async () => {
-  return await fetchData("/aprobaciones/");
+  const response = await fetchData("/aprobaciones/");
+  console.log('Aprobaciones raw data:', response);
+  return response;
 };
 
 export const createAprobacion = async (data) => {

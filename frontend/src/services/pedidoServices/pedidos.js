@@ -10,7 +10,13 @@ export const fetchPedidos = async () => {
 };
 
 export const createPedido = async (data) => {
-  return await createData("/pedidos/", data);
+  try {
+    const response = await createData("/pedidos/", data);
+    return response;
+  } catch (error) {
+    console.error("Error creating pedido:", error);
+    throw error;
+  }
 };
 
 export const updatePedido = async (idPedido, data) => {

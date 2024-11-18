@@ -39,7 +39,7 @@ class CodigoAprobacion(models.Model):
     contratado = models.FloatField(default=0)
         
     def __str__(self):
-        return f"Código {self.codigo} - Aprobación {self.aprobacion.numero_aprobacion}"
+        return f"Código {self.codigo}"
     @property
     def sin_solicitar(self):
         return self.aprobado - self.monto_pedido

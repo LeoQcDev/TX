@@ -12,7 +12,6 @@ class PlanImportacionViewSet(viewsets.ModelViewSet):
     """
     queryset = PlanImportacion.objects.all()
     serializer_class = PlanImportacionSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = PlanImportacionFilter
 
@@ -41,7 +40,6 @@ class ExtraplanViewSet(viewsets.ModelViewSet):
     """
     queryset = Extraplan.objects.all()
     serializer_class = ExtraplanSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = ExtraplanFilter
 
@@ -51,7 +49,6 @@ class GenericoProductoPIViewSet(viewsets.ModelViewSet):
     """
     queryset = GenericoProductoPI.objects.all()
     serializer_class = GenericoProductoPISerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = GenericoProductoPIFilter
 
@@ -61,7 +58,6 @@ class ObjetoViewSet(viewsets.ModelViewSet):
     """
     queryset = Objeto.objects.all()
     serializer_class = ObjetoSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = ObjetoFilter
 
@@ -71,7 +67,6 @@ class DesglosePIViewSet(viewsets.ModelViewSet):
     """
     queryset = DesglosePI.objects.all()
     serializer_class = DesglosePISerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = DesglosePIFilter
 
@@ -81,6 +76,5 @@ class DesgloseExtraplanViewSet(viewsets.ModelViewSet):
     """
     queryset = DesgloseExtraplan.objects.all()
     serializer_class = DesgloseExtraplanSerializer
-    permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_class = DesgloseExtraplanFilter

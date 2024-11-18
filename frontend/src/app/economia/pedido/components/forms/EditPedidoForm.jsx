@@ -1,10 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { updatePedido } from "@/services/pedidoServices/pedidos";
 import PedidoForm from "./PedidoForm";
 import { usePedidoFormData } from "../hooks/usePedidoFormData";
+import CreatePosicionForm from "./CreatePosicionForm";
 
 const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel }) => {
+  const [showPosicionForm, setShowPosicionForm] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -16,7 +19,7 @@ const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel })
     defaultValues: initialData,
   });
 
-  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones, codigosAprobacion } =
+  const { isLoading, clientes, genericosProducto, unidadesCompra, aprobaciones, codigosAprobacion, productos } =
     usePedidoFormData();
 
   const onSubmit = async (data) => {
@@ -30,6 +33,29 @@ const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel })
     }
   };
 
+  const handleCreatePosicion = () => {
+    setShowPosicionForm(true);
+  };
+
+  const handlePosicionCreated = () => {
+    setShowPosicionForm(false);
+    // Aquí podrías refrescar los datos del pedido si es necesario
+  };
+
+  if (showPosicionForm) {
+    return (
+      <CreatePosicionForm
+        pedidoId={idPedido}
+        aprobaciones={aprobaciones}
+        codigosAprobacion={codigosAprobacion}
+        productos={productos}
+        onSuccess={handlePosicionCreated}
+        onError={onError}
+        onCancel={() => setShowPosicionForm(false)}
+      />
+    );
+  }
+
   return (
     <PedidoForm
       handleSubmit={handleSubmit(onSubmit)}
@@ -39,6 +65,8 @@ const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel })
       isSubmitting={isLoading}
       actionType="edit"
       onCancel={onCancel}
+      onCreatePosicion={handleCreatePosicion}
+      idPedido={idPedido}
       setValue={setValue}
       control={control}
       clientes={clientes}
