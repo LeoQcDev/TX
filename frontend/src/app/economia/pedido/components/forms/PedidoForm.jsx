@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import FormButtons from "@/components/form/FormButtons";
 import FormCancelButton from "@/components/form/FormCancelButton";
 import FormConfirmButton from "@/components/form/FormConfirmButton";
@@ -7,6 +7,7 @@ import FormSelect from "@/components/form/FormSelect";
 import FormInput from "@/components/form/FormInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
+import Select from "react-select";
 
 const PedidoForm = ({
   onSubmit,
@@ -28,22 +29,33 @@ const PedidoForm = ({
   setValue
 }) => {
 
+  console.log('Aprobaciones disponibles:', aprobaciones);
+  console.log('Códigos de aprobación disponibles:', codigosAprobacion);
 
-  const [approvalRows, setApprovalRows] = useState([{ approval: "", codes: [""] }]);
-  const [selectedApprovals, setSelectedApprovals] = useState({});
-  const [selectedCodes, setSelectedCodes] = useState({});
+  const aprobacionesOptions = useMemo(() => 
+    aprobaciones?.map(apr => ({
+      value: apr.id.toString(),
+      label: apr.name
+    })) || [],
+  [aprobaciones]);
+
+  const codigosOptions = useMemo(() => 
+    codigosAprobacion?.map(codigo => ({
+      value: codigo.id.toString(),
+      label: codigo.name
+    })) || [],
+  [codigosAprobacion]);
+
+  const [selectedApprovals, setSelectedApprovals] = useState([]);
+  const [selectedCodes, setSelectedCodes] = useState([]);
   const [totalFinanciamiento, setTotalFinanciamiento] = useState(0);
 
   const calculateFinanciamiento = useCallback(() => {
-    let total = 0;
-    Object.values(selectedCodes).forEach(rowCodes => {
-      Object.values(rowCodes).forEach(codeId => {
-        const selectedCode = codigosAprobacion.find(c => c.id.toString() === codeId);
-        if (selectedCode) {
-          total += selectedCode.aprobado || 0;
-        }
-      });
-    });
+    const total = selectedCodes.reduce((sum, code) => {
+      const selectedCode = codigosAprobacion.find(c => c.id.toString() === code.value);
+      return sum + (selectedCode?.aprobado || 0);
+    }, 0);
+    
     setTotalFinanciamiento(total);
     setValue('financiamiento', total.toFixed(2));
   }, [selectedCodes, codigosAprobacion, setValue]);
@@ -52,104 +64,53 @@ const PedidoForm = ({
     calculateFinanciamiento();
   }, [selectedCodes, calculateFinanciamiento]);
 
-  const addApprovalRow = () => {
-    setApprovalRows([...approvalRows, { approval: "", codes: [""] }]);
+  const handleApprovalsChange = (selected) => {
+    setSelectedApprovals(selected || []);
+    if (!selected?.length) {
+      setSelectedCodes([]);
+    }
+    setValue('aprobaciones', selected?.map(item => parseInt(item.value)) || []);
   };
 
-  const removeApprovalRow = (index) => {
-    const newRows = approvalRows.filter((_, i) => i !== index);
-    setApprovalRows(newRows);
+  const handleCodesChange = (selected) => {
+    setSelectedCodes(selected || []);
+    setValue('codigos_aprobacion', selected?.map(item => parseInt(item.value)) || []);
+  };
+
+  const getAvailableCodes = useCallback(() => {
+    if (!selectedApprovals.length) return [];
     
-    setSelectedCodes(prev => {
-      const newCodes = { ...prev };
-      delete newCodes[index];
-      return newCodes;
-    });
-    
-    setSelectedApprovals(prev => {
-      const newApprovals = { ...prev };
-      delete newApprovals[index];
-      return newApprovals;
-    });
-  };
-
-  const addCodeField = (rowIndex) => {
-    const newRows = [...approvalRows];
-    newRows[rowIndex].codes.push("");
-    setApprovalRows(newRows);
-  };
-
-  const removeCodeField = (rowIndex, codeIndex) => {
-    const newRows = [...approvalRows];
-    newRows[rowIndex].codes = newRows[rowIndex].codes.filter((_, i) => i !== codeIndex);
-    setApprovalRows(newRows);
-    
-    setSelectedCodes(prev => {
-      const newCodes = { ...prev };
-      if (newCodes[rowIndex]) {
-        const { [codeIndex]: removedCode, ...rest } = newCodes[rowIndex];
-        newCodes[rowIndex] = rest;
-      }
-      return newCodes;
-    });
-  };
-
-  const isApprovalSelected = (approvalId) => {
-    return Object.values(selectedApprovals).some(
-      selectedId => selectedId === approvalId.toString()
-    );
-  };
-
-  const handleApprovalChange = (rowIndex, value) => {
-    setSelectedApprovals(prev => ({
-      ...prev,
-      [rowIndex]: value
-    }));
-    setSelectedCodes(prev => {
-      const newCodes = { ...prev };
-      delete newCodes[rowIndex];
-      return newCodes;
-    });
-  };
-
-  const handleCodeChange = (rowIndex, codeIndex, value) => {
-    setSelectedCodes(prev => ({
-      ...prev,
-      [rowIndex]: {
-        ...prev[rowIndex],
-        [codeIndex]: value
-      }
-    }));
-  };
-
-  const getSelectedCodesForRow = (rowIndex) => {
-    if (!selectedCodes[rowIndex]) return [];
-    return Object.values(selectedCodes[rowIndex]);
-  };
-
-  const getFilteredCodes = (rowIndex, inputId) => {
-    const selectedCodesInRow = getSelectedCodesForRow(rowIndex);
-    const currentValue = document.getElementById(inputId)?.value;
-    const selectedApprovalId = selectedApprovals[rowIndex];
-    
-    if (!selectedApprovalId) return [];
-    
-    const selectedApproval = aprobaciones.find(apr => apr.id.toString() === selectedApprovalId);
-    if (!selectedApproval || !selectedApproval.codigos_aprobacion) return [];
-    
+    const selectedApprovalIds = selectedApprovals.map(apr => parseInt(apr.value));
     return codigosAprobacion
-      .filter(codigo => 
-        // El código pertenece a la aprobación seleccionada
-        selectedApproval.codigos_aprobacion.includes(codigo.id) &&
-        // Y o bien es el código actualmente seleccionado o no está seleccionado en esta fila
-        (codigo.id.toString() === currentValue || 
-         !selectedCodesInRow.includes(codigo.id.toString()))
-      )
+      .filter(codigo => {
+        return aprobaciones.some(apr => 
+          selectedApprovalIds.includes(apr.id) && 
+          apr.codigos_aprobacion.includes(codigo.id)
+        );
+      })
       .map(codigo => ({
-        id: codigo.id,
-        name: `${codigo.codigo} - ${codigo.aprobado.toFixed(2)}`
+        value: codigo.id.toString(),
+        label: codigo.name
       }));
-  };
+  }, [selectedApprovals, codigosAprobacion, aprobaciones]);
+
+  useEffect(() => {
+    if (watch('aprobaciones')?.length) {
+      const initialApprovals = watch('aprobaciones').map(id => ({
+        value: id.toString(),
+        label: aprobaciones.find(a => a.id.toString() === id.toString())?.name
+      }));
+      setSelectedApprovals(initialApprovals);
+    }
+
+    if (watch('codigos_aprobacion')?.length) {
+      const initialCodes = watch('codigos_aprobacion').map(id => ({
+        value: id.toString(),
+        label: codigosAprobacion.find(c => c.id.toString() === id.toString())?.name
+      }));
+      setSelectedCodes(initialCodes);
+    }
+  }, [watch, aprobaciones, codigosAprobacion]);
 
   useEffect(() => {
     console.log('PedidoForm - Form Values:', {
@@ -295,73 +256,55 @@ const PedidoForm = ({
         <div className="mt-8">
           <h3 className="text-xl font-semibold mb-4">Aprobaciones y Códigos</h3>
           <div className="space-y-4">
-            {approvalRows.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex gap-4 items-start">
-                <div className="w-1/3">
-                  <FormSelect
-                    options={aprobaciones
-                      .filter(apr => !isApprovalSelected(apr.id.toString()) || 
-                        selectedApprovals[rowIndex] === apr.id.toString())
-                      .map(apr => ({
-                        id: apr.id,
-                        name: apr.name
-                      }))}
-                    defaultOption="Seleccione una aprobación"
-                    {...register(`approvals.${rowIndex}.approval`, {
-                      required: "Seleccione una aprobación",
-                      onChange: (e) => handleApprovalChange(rowIndex, e.target.value)
-                    })}
-                  />
-                </div>
-                <div className="flex-1 space-y-2">
-                  {row.codes.map((_, codeIndex) => (
-                    <div key={codeIndex} className="flex gap-2">
-                      <FormSelect
-                        id={`approval-code-${rowIndex}-${codeIndex}`}
-                        options={getFilteredCodes(rowIndex, `approval-code-${rowIndex}-${codeIndex}`)}
-                        defaultOption="Seleccione un código"
-                        {...register(`approvals.${rowIndex}.codes.${codeIndex}`, {
-                          required: "Seleccione un código",
-                          onChange: (e) => handleCodeChange(rowIndex, codeIndex, e.target.value)
-                        })}
-                        disabled={!selectedApprovals[rowIndex]}
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeCodeField(rowIndex, codeIndex)}
-                        className="p-2 text-red-600 hover:text-red-800"
-                      >
-                        <TrashIcon className="w-5 h-5" />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => addCodeField(rowIndex)}
-                    className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1"
-                  >
-                    <PlusIcon className="w-4 h-4" />
-                    Añadir código
-                  </button>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => removeApprovalRow(rowIndex)}
-                  className="p-2 text-red-600 hover:text-red-800"
-                >
-                  <TrashIcon className="w-5 h-5" />
-                </button>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Aprobaciones *
+                </label>
+                <Select
+                  isMulti
+                  options={aprobacionesOptions}
+                  value={selectedApprovals}
+                  onChange={handleApprovalsChange}
+                  className={`basic-multi-select ${errors.aprobaciones ? 'border-red-500' : ''}`}
+                  classNamePrefix="select"
+                  placeholder="Seleccione las aprobaciones"
+                  noOptionsMessage={() => "No hay aprobaciones disponibles"}
+                />
+                {errors.aprobaciones && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.aprobaciones.message}
+                  </p>
+                )}
               </div>
-            ))}
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Códigos de Aprobación *
+                </label>
+                <Select
+                  isMulti
+                  options={getAvailableCodes()}
+                  value={selectedCodes}
+                  onChange={handleCodesChange}
+                  className={`basic-multi-select ${errors.codigos_aprobacion ? 'border-red-500' : ''}`}
+                  classNamePrefix="select"
+                  placeholder="Seleccione los códigos"
+                  isDisabled={!selectedApprovals.length}
+                  noOptionsMessage={() => 
+                    selectedApprovals.length 
+                      ? "No hay códigos disponibles para las aprobaciones seleccionadas"
+                      : "Seleccione primero una aprobación"
+                  }
+                />
+                {errors.codigos_aprobacion && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.codigos_aprobacion.message}
+                  </p>
+                )}
+              </div>
+            </div>
           </div>
-          <button
-            type="button"
-            onClick={addApprovalRow}
-            className="mt-4 text-blue-600 hover:text-blue-800 flex items-center gap-1"
-          >
-            <PlusIcon className="w-5 h-5" />
-            Añadir nueva aprobación
-          </button>
         </div>
 
         <FormButtons>
