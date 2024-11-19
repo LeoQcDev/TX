@@ -20,17 +20,24 @@ const PedidoFormContainer = ({
     cliente: initialData.cliente?.id?.toString() || '',
     generico_producto: initialData.generico_producto?.id?.toString() || '',
     unidad_compra: initialData.unidad_compra?.id?.toString() || '',
-    plan_importacion: initialData.plan_importacion?.toString() || '',
+    plan_importacion: initialData.plan_importacion?.id?.toString() || initialData.plan_importacion?.toString() || '',
     fecha_entrada_tecnotex: initialData.fecha_entrada_tecnotex || new Date().toISOString().split('T')[0],
     fecha_presentado: initialData.fecha_presentado || new Date().toISOString().split('T')[0],
-    aprobaciones: Array.isArray(initialData.aprobaciones) ? initialData.aprobaciones : [],
-    codigos_aprobacion: Array.isArray(initialData.codigos_aprobacion) ? initialData.codigos_aprobacion : [],
+    aprobaciones: Array.isArray(initialData.aprobaciones) 
+      ? initialData.aprobaciones.map(apr => typeof apr === 'object' ? apr.id : apr) 
+      : [],
+    codigos_aprobacion: Array.isArray(initialData.codigos_aprobacion)
+      ? initialData.codigos_aprobacion.map(cod => typeof cod === 'object' ? cod.id : cod)
+      : [],
     presentador: initialData.presentador || '',
     tipo_pedido: initialData.tipo_pedido || '',
     numero_711: initialData.numero_711 || ''
   };
 
-  console.log('PedidoFormContainer - Formatted Data:', formattedInitialData);
+  console.log('Initial Data Raw:', initialData);
+  console.log('Formatted Initial Data:', formattedInitialData);
+
+
 
   const {
     register,

@@ -26,9 +26,17 @@ const PedidoForm = ({
   aprobaciones,
   codigosAprobacion,
   planesImportacion,
-  setValue
+  setValue,
+  initialData
 }) => {
-
+  console.log('PedidoForm - Props recibidos:', {
+    actionType,
+    idPedido,
+    aprobaciones,
+    codigosAprobacion,
+    watchedAprobaciones: watch('aprobaciones'),
+    watchedCodigos: watch('codigos_aprobacion')
+  });
   console.log('Aprobaciones disponibles:', aprobaciones);
   console.log('Códigos de aprobación disponibles:', codigosAprobacion);
 
@@ -64,6 +72,33 @@ const PedidoForm = ({
     calculateFinanciamiento();
   }, [selectedCodes, calculateFinanciamiento]);
 
+  useEffect(() => {
+    const watchedAprobaciones = watch('aprobaciones') || [];
+    const watchedCodigos = watch('codigos_aprobacion') || [];
+
+    if (watchedAprobaciones.length > 0) {
+      const selectedAprs = watchedAprobaciones.map(id => {
+        const apr = aprobaciones.find(a => a.id === id);
+        return apr ? {
+          value: apr.id.toString(),
+          label: apr.name
+        } : null;
+      }).filter(Boolean);
+      setSelectedApprovals(selectedAprs);
+    }
+
+    if (watchedCodigos.length > 0) {
+      const selectedCds = watchedCodigos.map(id => {
+        const cod = codigosAprobacion.find(c => c.id === id);
+        return cod ? {
+          value: cod.id.toString(),
+          label: cod.name
+        } : null;
+      }).filter(Boolean);
+      setSelectedCodes(selectedCds);
+    }
+  }, [watch, aprobaciones, codigosAprobacion]);
+
   const handleApprovalsChange = (selected) => {
     setSelectedApprovals(selected || []);
     if (!selected?.length) {
@@ -95,22 +130,32 @@ const PedidoForm = ({
   }, [selectedApprovals, codigosAprobacion, aprobaciones]);
 
   useEffect(() => {
-    if (watch('aprobaciones')?.length) {
-      const initialApprovals = watch('aprobaciones').map(id => ({
-        value: id.toString(),
-        label: aprobaciones.find(a => a.id.toString() === id.toString())?.name
-      }));
-      setSelectedApprovals(initialApprovals);
-    }
+    if (actionType === 'edit' && initialData) {
+      if (initialData.aprobaciones?.length) {
+        const initialApprovals = initialData.aprobaciones.map(id => {
+          const aprobacion = aprobaciones.find(a => a.id === id);
+          return {
+            value: id.toString(),
+            label: aprobacion ? `${aprobacion.numero} - ${aprobacion.descripcion || aprobacion.name}` : id
+          };
+        }).filter(item => item.label);
+        setSelectedApprovals(initialApprovals);
+        setValue('aprobaciones', initialData.aprobaciones);
+      }
 
-    if (watch('codigos_aprobacion')?.length) {
-      const initialCodes = watch('codigos_aprobacion').map(id => ({
-        value: id.toString(),
-        label: codigosAprobacion.find(c => c.id.toString() === id.toString())?.name
-      }));
-      setSelectedCodes(initialCodes);
+      if (initialData.codigos_aprobacion?.length) {
+        const initialCodes = initialData.codigos_aprobacion.map(id => {
+          const codigo = codigosAprobacion.find(c => c.id === id);
+          return {
+            value: id.toString(),
+            label: codigo ? `${codigo.codigo} - ${codigo.name}` : id
+          };
+        }).filter(item => item.label);
+        setSelectedCodes(initialCodes);
+        setValue('codigos_aprobacion', initialData.codigos_aprobacion);
+      }
     }
-  }, [watch, aprobaciones, codigosAprobacion]);
+  }, [actionType, initialData, aprobaciones, codigosAprobacion, setValue]);
 
   useEffect(() => {
     console.log('PedidoForm - Form Values:', {
@@ -266,7 +311,7 @@ const PedidoForm = ({
                   options={aprobacionesOptions}
                   value={selectedApprovals}
                   onChange={handleApprovalsChange}
-                  className={`basic-multi-select ${errors.aprobaciones ? 'border-red-500' : ''}`}
+                  className="basic-multi-select"
                   classNamePrefix="select"
                   placeholder="Seleccione las aprobaciones"
                   noOptionsMessage={() => "No hay aprobaciones disponibles"}
@@ -287,7 +332,7 @@ const PedidoForm = ({
                   options={getAvailableCodes()}
                   value={selectedCodes}
                   onChange={handleCodesChange}
-                  className={`basic-multi-select ${errors.codigos_aprobacion ? 'border-red-500' : ''}`}
+                  className="basic-multi-select"
                   classNamePrefix="select"
                   placeholder="Seleccione los códigos"
                   isDisabled={!selectedApprovals.length}
