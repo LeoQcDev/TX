@@ -24,9 +24,8 @@ const FormSelect = ({
         <option key={option.id} value={option.id}>
           {option.name ||
             option.denomination ||
-            option.commercial_margin ||
-            option.name}{" "}
-          {/* Ojo con esto, añadir aquí el atributo que mostraran en sus select */}
+            option.comercial_margin ||
+            option.name}
         </option>
       ))}
     </select>

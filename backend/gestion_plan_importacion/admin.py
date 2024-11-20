@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PlanImportacion, Extraplan, GenericoProductoPI, Objeto, DesglosePI, DesgloseExtraplan
+from .models import PlanImportacion, Extraplan, Objeto, DesglosePI, DesgloseExtraplan
 
 @admin.register(PlanImportacion)
 class PlanImportacionAdmin(admin.ModelAdmin):
@@ -15,10 +15,6 @@ class ExtraplanAdmin(admin.ModelAdmin):
     list_filter = ('fecha_emision',)
     ordering = ('-fecha_emision',)
 
-@admin.register(GenericoProductoPI)
-class GenericoProductoPIAdmin(admin.ModelAdmin):
-    list_display = ('codigo_pi',)
-    search_fields = ('codigo_pi',)
 
 @admin.register(Objeto)
 class ObjetoAdmin(admin.ModelAdmin):

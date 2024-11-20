@@ -54,7 +54,7 @@ const RepresentativePage = () => {
       <LoadingErrorWrapper
         isLoading={isLoading}
         error={error}
-        loadingMessage="Cargando representantes..."
+        loadingMessage="Cargando Representantes..."
       />
     );
 
@@ -90,7 +90,7 @@ const RepresentativePage = () => {
             <SearchField
               searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
-              placeholder="Buscar representante"
+              placeholder="Buscar Representante"
             />
 
             <PageButtonsLayout>
@@ -100,7 +100,7 @@ const RepresentativePage = () => {
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear representante" // Cambiar según la entidad
+                label="Crear Representante" // Cambiar según la entidad
               />
             </PageButtonsLayout>
           </PageComponentsLayout>

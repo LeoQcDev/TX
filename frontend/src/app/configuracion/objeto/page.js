@@ -1,10 +1,10 @@
 "use client";
 
 import React from "react";
-import { usePolos } from "./hooks/usePolos";
-import PoleTable from "./components/PoleTable";
-import CreatePoleForm from "./components/forms/CreatePoleForm";
-import EditPoleForm from "./components/forms/EditPoleForm";
+import { useObjetos } from "./hooks/useObjeto";
+import ObjetoTable from "./components/ObjetoTable.jsx";
+import CreateObjetoForm from "./components/forms/CreateObjetoForm";
+import EditObjetoForm from "./components/forms/EditObjetoForm";
 import PageLayout from "@/components/PageLayout";
 import PageTitle from "@/components/PageTitle";
 import PageComponentsLayout from "@/components/PageComponentsLayout";
@@ -16,12 +16,12 @@ import Notification from "@/components/Notification";
 import ConfirmationModal from "@/components/modal/ConfirmationModal";
 import LoadingErrorWrapper from "@/components/LoadingErrorWrapper";
 
-const PolePage = () => {
+const ObjetoPage = () => {
   const {
-    polos,
-    filteredPolos,
-    selectedPolos,
-    selectedPolo,
+    objetos,
+    filteredObjetos,
+    selectedObjetos,
+    selectedObjeto,
     isLoading,
     error,
     isModalOpen,
@@ -39,28 +39,27 @@ const PolePage = () => {
     handleEditClick,
     handleCancelCreate,
     handleCancelEdit,
-    handlePoloCreado,
-    handlePoloEditado,
+    handleObjetoCreado,
+    handleObjetoEditado,
     handleError,
-    setSelectedPolos,
+    setSelectedObjetos,
     setShowNotification,
     setNotificationMessage,
     setNotificationType,
-  } = usePolos();
+  } = useObjetos();
 
-  // Usar el componente de carga y error para prevenir renderizado innecesario
   if (isLoading || error)
     return (
       <LoadingErrorWrapper
         isLoading={isLoading}
         error={error}
-        loadingMessage="Cargando Polos..."
+        loadingMessage="Cargando Objetos..."
       />
     );
 
   return (
     <PageLayout>
-      <PageTitle title="Polos" />
+      <PageTitle title="Objetos" />
 
       {showNotification && (
         <Notification
@@ -71,16 +70,16 @@ const PolePage = () => {
       )}
 
       {isFormCreateOpen ? (
-        <CreatePoleForm
-          onSuccess={handlePoloCreado}
+        <CreateObjetoForm
+          onSuccess={handleObjetoCreado}
           onError={handleError}
           onCancel={handleCancelCreate}
         />
       ) : isFormEditOpen ? (
-        <EditPoleForm
-          idPole={selectedPolo?.id}
-          initialData={selectedPolo}
-          onSuccess={handlePoloEditado}
+        <EditObjetoForm
+          idObjeto={selectedObjeto?.id}
+          initialData={selectedObjeto}
+          onSuccess={handleObjetoEditado}
           onError={handleError}
           onCancel={handleCancelEdit}
         />
@@ -90,25 +89,26 @@ const PolePage = () => {
             <SearchField
               searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
-              placeholder="Buscar Polo"
+              placeholder="Buscar Objeto"
+              isNumber={false}
             />
 
             <PageButtonsLayout>
               <DeleteButton
                 onClick={handleOpenModal}
-                disabled={selectedPolos.length === 0} // Cambiar según la entidad
+                disabled={selectedObjetos.length === 0}
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear Polo" // Cambiar según la entidad
+                label="Crear Objeto"
               />
             </PageButtonsLayout>
           </PageComponentsLayout>
 
-          <PoleTable
-            poles={filteredPolos}
-            selectedPoles={selectedPolos}
-            setSelectedPoles={setSelectedPolos}
+          <ObjetoTable
+            objetos={filteredObjetos}
+            selectedObjetos={selectedObjetos}
+            setSelectedObjetos={setSelectedObjetos}
             onEditClick={handleEditClick}
             searchTerm={searchTerm}
           />
@@ -118,9 +118,9 @@ const PolePage = () => {
             onClose={handleCloseModal}
             onConfirm={handleEliminar}
             entidad={
-              selectedPolos.length > 1
-                ? "los polos seleccionados"
-                : "el polo seleccionado"
+              selectedObjetos.length > 1
+                ? "los objetos seleccionados"
+                : "el objeto seleccionado"
             }
           />
         </>
@@ -129,4 +129,4 @@ const PolePage = () => {
   );
 };
 
-export default PolePage;
+export default ObjetoPage;

@@ -54,13 +54,13 @@ const ComercialMarginPage = () => {
       <LoadingErrorWrapper
         isLoading={isLoading}
         error={error}
-        loadingMessage="Cargando márgenes comerciales..."
+        loadingMessage="Cargando Márgenes Comerciales..."
       />
     );
 
   return (
     <PageLayout>
-      <PageTitle title="Márgenes comerciales" />
+      <PageTitle title="Márgenes Comerciales" />
 
       {showNotification && (
         <Notification
@@ -90,7 +90,7 @@ const ComercialMarginPage = () => {
             <SearchField
               searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
-              placeholder="Buscar margen"
+              placeholder="Buscar Margen"
               isNumber={true}
             />
 
@@ -101,7 +101,7 @@ const ComercialMarginPage = () => {
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear margen" // Cambiar según la entidad
+                label="Crear Margen" // Cambiar según la entidad
               />
             </PageButtonsLayout>
           </PageComponentsLayout>

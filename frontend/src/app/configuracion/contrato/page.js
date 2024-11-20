@@ -57,7 +57,7 @@ const ContractPage = () => {
       <LoadingErrorWrapper
         isLoading={isLoading}
         error={error}
-        loadingMessage="Cargando contratos..."
+        loadingMessage="Cargando Contratos..."
       />
     );
 
@@ -96,8 +96,8 @@ const ContractPage = () => {
               filterType={filterType}
               handleFilterTypeChange={handleFilterTypeChange}
               filterOptions={[
-                { value: "contract_number", label: "# de contrato" },
-                { value: "client.name", label: "Nombre del cliente" },
+                { value: "contract_number", label: "# de Contrato" },
+                { value: "client.name", label: "Nombre del Cliente" },
               ]}
               placeholder="Buscar por:"
             />
@@ -108,7 +108,7 @@ const ContractPage = () => {
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear contrato" // Cambiar según la entidad
+                label="Crear Contrato" // Cambiar según la entidad
               />
             </PageButtonsLayout>
           </PageComponentsLayout>

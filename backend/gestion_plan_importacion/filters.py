@@ -1,5 +1,5 @@
 import django_filters
-from .models import PlanImportacion, Extraplan, GenericoProductoPI, Objeto, DesglosePI, DesgloseExtraplan
+from .models import PlanImportacion, Extraplan, Objeto, DesglosePI, DesgloseExtraplan
 
 class PlanImportacionFilter(django_filters.FilterSet):
     codigo_pi = django_filters.CharFilter(lookup_expr="icontains")
@@ -31,12 +31,6 @@ class ExtraplanFilter(django_filters.FilterSet):
             "importe_extraplan",
         ]
 
-class GenericoProductoPIFilter(django_filters.FilterSet):
-    codigo_pi = django_filters.NumberFilter()
-
-    class Meta:
-        model = GenericoProductoPI
-        fields = ["codigo_pi"]
 
 class ObjetoFilter(django_filters.FilterSet):
     nombre = django_filters.CharFilter(lookup_expr="icontains")

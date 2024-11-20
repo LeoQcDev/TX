@@ -96,7 +96,7 @@ const ClientPage = () => {
             <SearchField
               searchTerm={searchTerm}
               handleSearchChange={handleSearchChange}
-              placeholder="Buscar cliente"
+              placeholder="Buscar Cliente"
             />
 
             <PageButtonsLayout>
@@ -106,7 +106,7 @@ const ClientPage = () => {
               />
               <CreateButton
                 onClick={handleCreateClick}
-                label="Crear cliente" // Cambiar según la entidad
+                label="Crear Cliente" // Cambiar según la entidad
               />
             </PageButtonsLayout>
           </PageComponentsLayout>

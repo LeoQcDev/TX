@@ -19,13 +19,13 @@ const ContractForm = ({
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-md mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {actionType === "create" ? "Nuevo contrato" : "Editar contrato"}
+        {actionType === "create" ? "Nuevo Contrato" : "Editar Contrato"}
       </h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Número de Contrato */}
         <FormField
           id="contract_number"
-          label="Número de contrato"
+          label="Número de Contrato"
           type="text"
           placeholder="TX-00000"
           register={register("contract_number", {
@@ -43,7 +43,7 @@ const ContractForm = ({
         {/* Fecha de Firma */}
         <FormField
           id="signature_date"
-          label="Fecha de firma"
+          label="Fecha de Firma"
           type="date"
           placeholder="DD/MM/YYYY"
           register={register("signature_date", {

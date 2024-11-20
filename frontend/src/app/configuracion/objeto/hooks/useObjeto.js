@@ -1,82 +1,95 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { fetchMargins, deleteMargin } from "@/services/marginServices/margins";
+import {
+  fetchObjetos,
+  deleteObjeto,
+} from "@/services/objetoServices/objeto";
+import Fuse from "fuse.js";
 
-export const useMargenesComerciales = () => {
-  const [margenesComerciales, setMargenesComerciales] = useState([]);
-  const [selectedMargenesComerciales, setSelectedMargenesComerciales] =
-    useState([]);
-  const [selectedMargenComercial, setSelectedMargenComercial] = useState(null);
+export const useObjetos = () => {
+  const [objetos, setObjetos] = useState([]);
+  const [selectedObjetos, setSelectedObjetos] = useState([]);
+  const [selectedObjeto, setSelectedObjeto] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isFormCreateOpen, setIsFormCreateOpen] = useState(false);
   const [isFormEditOpen, setIsFormEditOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
   const [notificationMessage, setNotificationMessage] = useState("");
   const [notificationType, setNotificationType] = useState("");
   const [showNotification, setShowNotification] = useState(false);
 
-  const getComercialMargins = useCallback(async () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterType, setFilterType] = useState("nombre");
+
+  const obtenerObjetos = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await fetchMargins();
-      setMargenesComerciales(data);
+      const data = await fetchObjetos();
+      setObjetos(data);
     } catch (error) {
-      setError("Error al obtener los margenes comerciales.");
-      handleError("Error al obtener los polos");
+      setError("Error al obtener los objetos");
+      handleError("Error al obtener los objetos");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    getComercialMargins();
-  }, [getComercialMargins]);
+    obtenerObjetos();
+  }, [obtenerObjetos]);
 
-  const filteredMargenesComerciales = useMemo(() => {
+  // Configurar búsqueda difusa
+  const fuse = new Fuse(objetos, {
+    keys: filterType === "nombre" ? ["nombre"] : ["descripcion"],
+    threshold: 0.3,
+  });
+
+  const filteredObjetos = useMemo(() => {
     if (searchTerm.trim() === "") {
-      return margenesComerciales;
+      return objetos;
     }
-    return margenesComerciales.filter((margenComercial) =>
-      margenComercial.comercial_margin.toString().includes(searchTerm)
-    );
-  }, [searchTerm, margenesComerciales]);
+    return fuse.search(searchTerm).map((result) => result.item);
+  }, [fuse, searchTerm, objetos]);
+
+  const handleFilterTypeChange = (event) => {
+    setFilterType(event.target.value);
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
   const handleOpenModal = () => {
-    if (selectedMargenesComerciales.length > 0) {
+    if (selectedObjetos.length > 0) {
       setIsModalOpen(true);
     }
   };
 
   const handleCloseModal = () => {
-    setSelectedMargenesComerciales([]);
+    setSelectedObjetos([]);
     setIsModalOpen(false);
   };
 
   const handleEliminar = async () => {
     try {
       await Promise.all(
-        selectedMargenesComerciales.map(async (margenId) => {
-          await deleteMargin(margenId);
+        selectedObjetos.map(async (idObjeto) => {
+          await deleteObjeto(idObjeto);
         })
       );
-      getComercialMargins();
+      obtenerObjetos();
       handleCloseModal();
       showNotificationMessage(
         "success",
-        selectedMargenesComerciales.length > 1
-          ? "Márgenes Comerciales eliminados exitosamente"
-          : "Margen Comercial eliminado exitosamente"
+        selectedObjetos.length > 1
+          ? "Objetos eliminados exitosamente"
+          : "Objeto eliminado exitosamente"
       );
     } catch (error) {
       handleError(
-        error.response?.data.detail ||
-          "Error desconocido al eliminar el margen comercial"
+        error.response?.data?.detail ||
+          "Error desconocido al eliminar el Objeto"
       );
       handleCloseModal();
     }
@@ -86,8 +99,8 @@ export const useMargenesComerciales = () => {
     setIsFormCreateOpen(true);
   };
 
-  const handleEditClick = (margenComercial) => {
-    setSelectedMargenComercial(margenComercial);
+  const handleEditClick = (objeto) => {
+    setSelectedObjeto(objeto);
     setIsFormEditOpen(true);
   };
 
@@ -97,20 +110,20 @@ export const useMargenesComerciales = () => {
 
   const handleCancelEdit = () => {
     setIsFormEditOpen(false);
-    setSelectedMargenComercial(null);
+    setSelectedObjeto(null);
   };
 
-  const handleMargenComercialCreado = () => {
+  const handleObjetoCreado = () => {
     setIsFormCreateOpen(false);
-    getComercialMargins();
-    showNotificationMessage("success", "Margen Comercial creado exitosamente");
+    obtenerObjetos();
+    showNotificationMessage("success", "Objeto creado exitosamente");
   };
 
-  const handleMargenComercialEditado = () => {
+  const handleObjetoEditado = () => {
     setIsFormEditOpen(false);
-    setSelectedMargenComercial(null);
-    getComercialMargins();
-    showNotificationMessage("success", "Margen Comercial editado exitosamente");
+    setSelectedObjeto(null);
+    obtenerObjetos();
+    showNotificationMessage("success", "Objeto editado exitosamente");
   };
 
   const handleError = (message) => {
@@ -124,20 +137,23 @@ export const useMargenesComerciales = () => {
   };
 
   return {
-    margenesComerciales,
-    filteredMargenesComerciales,
-    selectedMargenesComerciales,
-    selectedMargenComercial,
+    objetos,
+    filteredObjetos,
+    selectedObjetos,
+    selectedObjeto,
     isLoading,
     error,
     isModalOpen,
     isFormCreateOpen,
     isFormEditOpen,
     searchTerm,
+    filterType,
     notificationMessage,
     notificationType,
     showNotification,
     handleSearchChange,
+    setFilterType,
+    handleFilterTypeChange,
     handleOpenModal,
     handleCloseModal,
     handleEliminar,
@@ -145,10 +161,10 @@ export const useMargenesComerciales = () => {
     handleEditClick,
     handleCancelCreate,
     handleCancelEdit,
-    handleMargenComercialCreado,
-    handleMargenComercialEditado,
+    handleObjetoCreado,
+    handleObjetoEditado,
     handleError,
-    setSelectedMargenesComerciales,
+    setSelectedObjetos,
     setShowNotification,
     setNotificationMessage,
     setNotificationType,

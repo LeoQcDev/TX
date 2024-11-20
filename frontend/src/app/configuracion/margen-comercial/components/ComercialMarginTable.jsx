@@ -15,10 +15,10 @@ const ComercialMarginTable = ({
 
   const renderRow = (comercialMargin, searchTerm) => [
     <td
-      key="commercial_margin"
+      key="comercial_margin"
       className="px-6 py-4 text-center whitespace-nowrap"
     >
-      {highlightMatch(comercialMargin.commercial_margin, searchTerm)}
+      {highlightMatch(comercialMargin.comercial_margin, searchTerm)}
     </td>,
   ];
 

@@ -20,7 +20,7 @@ const ComercialMarginFormContainer = ({
     reset,
   } = useForm({
     defaultValues: {
-      commercial_margin: initialData.commercial_margin || "",
+      comercial_margin: initialData.comercial_margin || "",
     },
     mode: "onChange",
     reValidateMode: "onChange",

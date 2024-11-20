@@ -1,8 +1,15 @@
 from rest_framework import serializers
-from .models import PlanImportacion, Extraplan, GenericoProductoPI, Objeto, DesglosePI, DesgloseExtraplan
+from .models import PlanImportacion, Extraplan, Objeto, DesglosePI, DesgloseExtraplan
 from gestion_clientes.serializers import ClientSerializer
 from gestion_clientes.models import Client
 
+
+class ObjetoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Objeto
+        fields = ['id', 'nombre', 'descripcion']
+
+        
 class PlanImportacionSerializer(serializers.ModelSerializer):
     cliente = ClientSerializer(read_only=True)
     cliente_id = serializers.PrimaryKeyRelatedField(
@@ -11,6 +18,7 @@ class PlanImportacionSerializer(serializers.ModelSerializer):
         write_only=True
     )
     extraplanes = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    objetos = ObjetoSerializer(many=True, read_only=True)
 
     class Meta:
         model = PlanImportacion
@@ -23,6 +31,7 @@ class PlanImportacionSerializer(serializers.ModelSerializer):
             'importe_pi',
             'anio_pi',
             'extraplanes',
+            'objetos'
         ]
 
     def to_representation(self, instance):
@@ -40,15 +49,8 @@ class ExtraplanSerializer(serializers.ModelSerializer):
         model = Extraplan
         fields = ['id', 'codigo_extraplan', 'motivo', 'fecha_emision', 'importe_extraplan', 'plan_importacion']
 
-class GenericoProductoPISerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GenericoProductoPI
-        fields = ['id', 'codigo_pi']
 
-class ObjetoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Objeto
-        fields = ['id', 'nombre', 'descripcion']
+
 
 class DesglosePISerializer(serializers.ModelSerializer):
     class Meta:

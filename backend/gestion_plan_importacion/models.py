@@ -22,15 +22,15 @@ def validate_last_three_months(value):
 
 
 class PlanImportacion(models.Model):
-    cliente = models.ForeignKey(Client, on_delete=models.CASCADE, unique_for_year='anio_pi')
+    cliente = models.ForeignKey(Client, on_delete=models.CASCADE)
     fecha_emision = models.DateTimeField(default=timezone.now)
-    importe_pi = models.DecimalField(max_digits=10, decimal_places=2, null=False)
-    anio_pi = models.IntegerField()
-    codigo_pi = models.CharField(max_length=8, unique=True, editable=False)
+    importe_pi = models.DecimalField(max_digits=10, decimal_places=2, null=False,verbose_name="Importe de Plan de Importacion")
+    anio_pi = models.IntegerField(verbose_name="Año del Plan de Importacion")
+    codigo_pi = models.CharField(max_length=8, unique=True, editable=False,verbose_name="Codigo del Plan de Importacion")
+    objetos = models.ManyToManyField('Objeto', through='DesglosePI', related_name='planes_importacion')
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Si es una nueva instancia
-            # Generar el código PI automáticamente
+        if not self.pk:
             last_plan = PlanImportacion.objects.filter(anio_pi=self.anio_pi).order_by('codigo_pi').last()
             if last_plan:
                 last_code = int(last_plan.codigo_pi[4:])
@@ -46,6 +46,7 @@ class PlanImportacion(models.Model):
     class Meta:
         verbose_name = "Plan de Importación"
         verbose_name_plural = "Planes de Importación"
+        unique_together = ['cliente', 'anio_pi']
 
 class Extraplan(models.Model):
     plan_importacion = models.ForeignKey(PlanImportacion, on_delete=models.CASCADE, related_name='extraplanes')
@@ -73,19 +74,11 @@ class Extraplan(models.Model):
         verbose_name = "Extraplan"
         verbose_name_plural = "Extraplanes"
 
-class GenericoProductoPI(models.Model):
-    codigo_pi = models.IntegerField(unique=True)
-
-    def __str__(self):
-        return f"Genérico Producto PI: {self.codigo_pi}"
-
-    class Meta:
-        verbose_name = "Genérico de Producto PI"
-        verbose_name_plural = "Genéricos de Producto PI"
 
 class Objeto(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField()
+    extraplanes = models.ManyToManyField('Extraplan', through='DesgloseExtraplan', related_name='objetos')
 
     def __str__(self):
         return self.nombre
