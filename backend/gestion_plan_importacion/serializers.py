@@ -47,7 +47,7 @@ class PlanImportacionSerializer(serializers.ModelSerializer):
 class ExtraplanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Extraplan
-        fields = ['id', 'codigo_extraplan', 'motivo', 'fecha_emision', 'importe_extraplan', 'plan_importacion']
+        fields = '__all__'
 
 
 
@@ -55,27 +55,9 @@ class ExtraplanSerializer(serializers.ModelSerializer):
 class DesglosePISerializer(serializers.ModelSerializer):
     class Meta:
         model = DesglosePI
-        fields = [
-            'id',
-            'plan_importacion',
-            'objeto',
-            'importe_por_objeto',
-            'liquido',
-            'mediano_plazo',
-            'largo_plazo',
-            'desglose_total',
-        ]
+        fields = '__all__'
 
 class DesgloseExtraplanSerializer(serializers.ModelSerializer):
     class Meta:
         model = DesgloseExtraplan
-        fields = [
-            'id',
-            'extraplan',
-            'objeto',
-            'importe_por_objeto',
-            'liquido',
-            'mediano_plazo',
-            'largo_plazo',
-            'desglose_total',
-        ]
+        fields = '__all__'

@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from datetime import timedelta
 from gestion_clientes.models import Client
@@ -14,14 +14,9 @@ def validate_date_range_two_days(value):
     return timezone.now() <= value <= timezone.now() + timedelta(days=2)
 
 
-def validate_last_three_months(value):
-    year = value.year
-    month = value.month
-    return month >= 10 and month <= 12
-
-
 
 class PlanImportacion(models.Model):
+    cliente = models.ForeignKey(Client, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Client, on_delete=models.CASCADE)
     fecha_emision = models.DateTimeField(default=timezone.now)
     importe_pi = models.DecimalField(max_digits=10, decimal_places=2, null=False,verbose_name="Importe de Plan de Importacion")
@@ -44,6 +39,7 @@ class PlanImportacion(models.Model):
         return f"Plan Importación {self.codigo_pi} - {self.cliente.name}"
 
     class Meta:
+        unique_together = ['cliente', 'anio_pi']
         verbose_name = "Plan de Importación"
         verbose_name_plural = "Planes de Importación"
         unique_together = ['cliente', 'anio_pi']

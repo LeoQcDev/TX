@@ -17,20 +17,19 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include
-from django.http import HttpResponseRedirect
+from django.views.generic import RedirectView
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework import permissions
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Backend API",
-      default_version='v1',
-      description="Documentación de la API",
-      terms_of_service="https://www.google.com/policies/terms/",
-      contact=openapi.Contact(email="contact@backend.local"),
-      license=openapi.License(name="BSD License"),
-   ),
-   public=True,
+    openapi.Info(
+        title="API Documentation",
+        default_version='v1',
+        description="API documentation for the backend",
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
@@ -38,8 +37,7 @@ urlpatterns = [
     path("api/", include("gestion_clientes.urls")),
     path("api/", include("gestion_pedidos.urls")),
     path("api/", include("gestion_plan_importacion.urls")),
-    path('', lambda request: HttpResponseRedirect('/swagger/')),
+    path("api/", include("gestion_aprobaciones.urls")),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    
+    path('', RedirectView.as_view(url='swagger/', permanent=False), name='index'),
 ]

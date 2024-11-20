@@ -1,8 +1,11 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from .models import GenericoProducto, UnidadCompra, Pedido
-from .serializers import GenericoProductoSerializer, UnidadCompraSerializer, PedidoSerializer
-
+from .models import GenericoProducto, UnidadCompra, Pedido, Posicion, Producto, UnidadMedida
+from .serializers import GenericoProductoSerializer, UnidadCompraSerializer, PedidoSerializer, PosicionSerializer, ProductoSerializer, UnidadMedidaSerializer, PedidoReadSerializer
+from gestion_clientes.serializers import ClientSerializer
+from gestion_plan_importacion.serializers import PlanImportacionSerializer
+from gestion_aprobaciones.serializers import AprobacionSerializer, CodigoAprobacionSerializer
+from django.db import transaction
 
 class GenericoProductoViewSet(viewsets.ModelViewSet):
     """
@@ -27,17 +30,30 @@ class PedidoViewSet(viewsets.ModelViewSet):
     queryset = Pedido.objects.all()
     serializer_class = PedidoSerializer
 
-    def get_queryset(self):
-        """
-        Optionally filters results based on query parameters
-        """
-        queryset = Pedido.objects.all()
-        client = self.request.query_params.get('client', None)
-        Pedido_type = self.request.query_params.get('Pedido_type', None)
+    def get_serializer_class(self):
+        if self.action in ['list', 'retrieve']:
+            return PedidoReadSerializer
+        return PedidoSerializer
 
-        if client is not None:
-            queryset = queryset.filter(client__id=client)
-        if Pedido_type is not None:
-            queryset = queryset.filter(Pedido_type=Pedido_type)
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        instance.recalcular_financiamiento()
 
-        return queryset 
+    def perform_create(self, serializer):
+        instance = serializer.save()
+        transaction.on_commit(lambda: instance.recalcular_financiamiento())
+
+class PosicionViewSet(viewsets.ModelViewSet):
+    queryset = Posicion.objects.all()
+    serializer_class = PosicionSerializer
+
+
+class ProductoViewSet(viewsets.ModelViewSet):
+    queryset = Producto.objects.all()
+    serializer_class = ProductoSerializer
+
+
+class UnidadMedidaViewSet(viewsets.ModelViewSet):
+    queryset = UnidadMedida.objects.all()
+    serializer_class = UnidadMedidaSerializer
+
