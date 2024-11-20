@@ -54,7 +54,7 @@ export const sectionsLinks = {
   Economia: [
     { href: "/economia/pedido", label: "Pedido" },
     { href: "/economia/aprobacion", label: "Aprobación" },
-    { href: "/economia/plan-importacion", label: "Plan de Importación" },
+    { href: "/economia/plan_importacion", label: "Plan de Importación" },
     { href: "/economia/cliente", label: "Cliente" },
   ],
   Comercial: [

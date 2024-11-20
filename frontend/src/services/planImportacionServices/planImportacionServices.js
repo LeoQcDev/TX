@@ -1,25 +1,31 @@
-import api from "../api";
+import {
+  fetchData,
+  createData,
+  updateDataPartial,
+  deleteData,
+} from "@/services/api";
 
-export const getPlanesImportacion = async () => {
-  const response = await api.get("/plan-importacion/");
-  return response.data;
-};
-
-export const getPlanImportacion = async (id) => {
-  const response = await api.get(`/plan-importacion/${id}/`);
-  return response.data;
+export const fetchPlanesImportacion = async () => {
+  return await fetchData("/plan-importacion/");
 };
 
 export const createPlanImportacion = async (data) => {
-  const response = await api.post("/plan-importacion/", data);
-  return response.data;
+  try {
+    const response = await createData("/plan-importacion/", data);
+    return response;
+  } catch (error) {
+    console.error("Error creating plan importacion:", error);
+    throw error;
+  }
 };
 
-export const updatePlanImportacion = async (id, data) => {
-  const response = await api.put(`/plan-importacion/${id}/`, data);
-  return response.data;
+export const updatePlanImportacion = async (idPlanImportacion, data) => {
+  return await updateDataPartial("/plan-importacion", `${idPlanImportacion}`, data);
 };
 
-export const deletePlanImportacion = async (id) => {
-  await api.delete(`/plan-importacion/${id}/`);
-}; 
+export const deletePlanImportacion = async (idPlanImportacion) => {
+  return await deleteData("/plan-importacion", idPlanImportacion);
+};
+
+// Alias para mantener compatibilidad con código existente
+export const getPlanesImportacion = fetchPlanesImportacion;

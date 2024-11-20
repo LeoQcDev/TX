@@ -12,7 +12,7 @@ const EconomiaPage = () => {
   const opciones = [
     { nombre: "Pedido", ruta: "/economia/pedido" },
     { nombre: "Aprobación", ruta: "/economia/aprobacion" },
-    { nombre: "Plan de Importación", ruta: "/economia/plan-importacion" },
+    { nombre: "Plan de Importación", ruta: "/economia/plan_importacion" },
     { nombre: "Cliente", ruta: "/economia/cliente" },
   ];
 

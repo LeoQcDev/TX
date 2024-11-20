@@ -1,5 +1,3 @@
-import React from "react";
-import PropTypes from "prop-types";
 import PlanImportacionFormContainer from "./PlanImportacionFormContainer";
 
 const CreatePlanImportacionForm = ({ onSuccess, onError, onCancel }) => {
@@ -11,12 +9,6 @@ const CreatePlanImportacionForm = ({ onSuccess, onError, onCancel }) => {
       onCancel={onCancel}
     />
   );
-};
-
-CreatePlanImportacionForm.propTypes = {
-  onSuccess: PropTypes.func.isRequired,
-  onError: PropTypes.func.isRequired,
-  onCancel: PropTypes.func.isRequired,
 };
 
 export default CreatePlanImportacionForm; 
