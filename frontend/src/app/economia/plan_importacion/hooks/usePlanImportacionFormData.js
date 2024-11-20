@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { fetchClients } from "@/services/clientServices/clients";
 import { 
   fetchPlanesImportacion,
@@ -73,14 +73,16 @@ export const usePlanImportacionFormData = () => {
     setSearchTerm(e.target.value);
   };
 
-  const filteredPlanesImportacion = planesImportacion.filter((plan) => {
-    const searchString = searchTerm.toLowerCase();
-    return (
-      plan.codigo_pi?.toLowerCase().includes(searchString) ||
-      plan.cliente?.name?.toLowerCase().includes(searchString) ||
-      plan.anio_pi?.toString().includes(searchString)
-    );
-  });
+  const filteredPlanesImportacion = useMemo(() => {
+    return planesImportacion.filter((plan) => {
+      const searchString = searchTerm.toLowerCase();
+      return (
+        plan.codigo_pi?.toLowerCase().includes(searchString) ||
+        plan.cliente?.name?.toLowerCase().includes(searchString) ||
+        plan.anio_pi?.toString().includes(searchString)
+      );
+    });
+  }, [planesImportacion, searchTerm]);
 
   const showNotificationMessage = (type, message) => {
     setNotificationMessage(message);

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { usePlanImportacionFormData } from "./hooks/usePlanImportacionFormData";
-import PlanImportacionTable from "./components/forms/PlanImportacionTable";
+import PlanImportacionTable from "./components/PlanImportacionTable";
 import CreatePlanImportacionForm from "./components/forms/CreatePlanImportacionForm";
 import EditPlanImportacionForm from "./components/forms/EditPlanImportacionForm";
 import PageLayout from "@/components/PageLayout";
@@ -61,47 +61,6 @@ const PlanImportacionPage = () => {
     <PageLayout>
       <PageTitle>Planes de Importación</PageTitle>
 
-      <PageButtonsLayout>
-        <DeleteButton
-          onClick={handleOpenModal}
-          disabled={!selectedPlanesImportacion?.length}
-        />
-        <CreateButton onClick={handleCreateClick} />
-        <SearchField
-          value={searchTerm}
-          onChange={handleSearchChange}
-          placeholder="Buscar plan de importación..."
-        />
-      </PageButtonsLayout>
-
-      <PageComponentsLayout>
-        <PlanImportacionTable
-          planesImportacion={filteredPlanesImportacion}
-          selectedPlanesImportacion={selectedPlanesImportacion}
-          setSelectedPlanesImportacion={setSelectedPlanesImportacion}
-          onPlanImportacionDoubleClick={handlePlanImportacionDoubleClick}
-          onEditClick={handleEditClick}
-          searchTerm={searchTerm}
-        />
-      </PageComponentsLayout>
-
-      {isFormCreateOpen && (
-        <CreatePlanImportacionForm
-          onSuccess={handlePlanImportacionCreado}
-          onError={handleError}
-          onCancel={handleCancelCreate}
-        />
-      )}
-
-      {isFormEditOpen && selectedPlanImportacion && (
-        <EditPlanImportacionForm
-          planImportacion={selectedPlanImportacion}
-          onSuccess={handlePlanImportacionEditado}
-          onError={handleError}
-          onCancel={handleCancelEdit}
-        />
-      )}
-
       {showNotification && (
         <Notification
           message={notificationMessage}
@@ -110,16 +69,65 @@ const PlanImportacionPage = () => {
         />
       )}
 
-      <ConfirmationModal
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onConfirm={handleEliminar}
-        entidad={
-          selectedPlanesImportacion?.length > 1
-            ? "los planes de importación seleccionados"
-            : "el plan de importación seleccionado"
-        }
-      />
+      <div className="container mx-auto px-4 py-8">
+        {isFormCreateOpen ? (
+          <CreatePlanImportacionForm
+            onSuccess={handlePlanImportacionCreado}
+            onError={handleError}
+            onCancel={handleCancelCreate}
+          />
+        ) : isFormEditOpen ? (
+          <EditPlanImportacionForm
+            planImportacion={selectedPlanImportacion}
+            onSuccess={handlePlanImportacionEditado}
+            onError={handleError}
+            onCancel={handleCancelEdit}
+          />
+        ) : (
+          <>
+            <PageComponentsLayout>
+              <SearchField
+                searchTerm={searchTerm}
+                handleSearchChange={handleSearchChange}
+                placeholder="Buscar plan de importación..."
+              />
+
+              <PageButtonsLayout>
+                <DeleteButton
+                  onClick={handleOpenModal}
+                  disabled={!selectedPlanesImportacion?.length}
+                />
+                <CreateButton
+                  onClick={handleCreateClick}
+                  label="Crear plan de importación"
+                />
+              </PageButtonsLayout>
+            </PageComponentsLayout>
+
+            <div className="mt-8">
+              <PlanImportacionTable
+                planesImportacion={filteredPlanesImportacion}
+                selectedPlanesImportacion={selectedPlanesImportacion}
+                setSelectedPlanesImportacion={setSelectedPlanesImportacion}
+                onPlanImportacionDoubleClick={handlePlanImportacionDoubleClick}
+                onEditClick={handleEditClick}
+                searchTerm={searchTerm}
+              />
+            </div>
+
+            <ConfirmationModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onConfirm={handleEliminar}
+              entidad={
+                selectedPlanesImportacion?.length > 1
+                  ? "los planes de importación seleccionados"
+                  : "el plan de importación seleccionado"
+              }
+            />
+          </>
+        )}
+      </div>
     </PageLayout>
   );
 };
