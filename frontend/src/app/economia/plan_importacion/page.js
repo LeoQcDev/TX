@@ -78,7 +78,7 @@ const PlanImportacionPage = () => {
           />
         ) : isFormEditOpen ? (
           <EditPlanImportacionForm
-            planImportacion={selectedPlanImportacion}
+            initialData={selectedPlanImportacion}
             onSuccess={handlePlanImportacionEditado}
             onError={handleError}
             onCancel={handleCancelEdit}

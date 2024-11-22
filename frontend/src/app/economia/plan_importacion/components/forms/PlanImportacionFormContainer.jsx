@@ -8,8 +8,7 @@ import { usePlanImportacionFormData } from "../../hooks/usePlanImportacionFormDa
 import PlanImportacionForm from "./PlanImportacionForm";
 
 const PlanImportacionFormContainer = ({
-  actionType,
-  idPlanImportacion,
+  actionType,  
   initialData = {},
   onSuccess,
   onError,
@@ -17,11 +16,13 @@ const PlanImportacionFormContainer = ({
 }) => {
   const formattedInitialData = {
     ...initialData,
-    cliente: initialData.cliente?.id?.toString() || '',
-    fecha_emision: initialData.fecha_emision || new Date().toISOString().split('T')[0],
-    importe_pi: initialData.importe_pi || '',
+    cliente: initialData.cliente?.id?.toString() || "",
+    fecha_emision:
+      initialData.fecha_emision || new Date().toISOString().split("T")[0],
+    importe_pi: initialData.importe_pi || "",
     anio_pi: initialData.anio_pi || new Date().getFullYear(),
-    codigo_pi: initialData.codigo_pi || ''
+    codigo_pi: initialData.codigo_pi || "",
+    objeto: initialData.objeto?.id?.toString() || "",
   };
 
   console.log('Initial Data Raw:', initialData);
@@ -41,12 +42,17 @@ const PlanImportacionFormContainer = ({
     defaultValues: formattedInitialData
   });
 
-  const { isLoading, clientes } = usePlanImportacionFormData();
-
+  const { isLoading, clientes, objetos } = usePlanImportacionFormData();
+  console.log('objetos',objetos)
   const handleFormSubmit = async (data) => {
+    console.log(
+      "------------------------------------------------",
+      parseInt(data.cliente)
+    );
     try {
       const formattedData = {
-        cliente: parseInt(data.cliente),
+        cliente_id: parseInt(data.cliente),
+        objeto: parseInt(data.objeto),
         fecha_emision: new Date(data.fecha_emision).toISOString(),
         importe_pi: parseFloat(data.importe_pi),
         anio_pi: parseInt(data.anio_pi),
@@ -56,7 +62,7 @@ const PlanImportacionFormContainer = ({
       if (actionType === "create") {
         await createPlanImportacion(formattedData);
       } else {
-        await updatePlanImportacion(idPlanImportacion, formattedData);
+        await updatePlanImportacion(initialData.id, formattedData);
       }
 
       onSuccess();
@@ -93,6 +99,7 @@ const PlanImportacionFormContainer = ({
       setValue={setValue}
       control={control}
       clientes={clientes}
+      objetos = {objetos}
     />
   );
 };

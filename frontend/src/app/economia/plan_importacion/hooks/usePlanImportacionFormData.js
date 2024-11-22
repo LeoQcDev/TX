@@ -4,10 +4,12 @@ import {
   fetchPlanesImportacion,
   deletePlanImportacion 
 } from "@/services/planImportacionServices/planImportacionServices";
+import { fetchObjects } from "@/services/objectServices/objects";
 
 export const usePlanImportacionFormData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [clientes, setClientes] = useState([]);
+  const [objetos, setObjetos] = useState([]);
   const [planesImportacion, setPlanesImportacion] = useState([]);
   const [selectedPlanesImportacion, setSelectedPlanesImportacion] = useState([]);
   const [selectedPlanImportacion, setSelectedPlanImportacion] = useState(null);
@@ -25,16 +27,26 @@ export const usePlanImportacionFormData = () => {
       setIsLoading(true);
       console.log('Obteniendo planes de importación...');
       
-      const [clientesData, planesData] = await Promise.all([
+      const [clientesData, planesData, objetosData] = await Promise.all([
         fetchClients(),
         fetchPlanesImportacion(),
+        fetchObjects(),
       ]);
 
-      console.log('Datos sin formatear:', { clientesData, planesData });
+      console.log("Datos sin formatear:", {
+        clientesData,
+        planesData,
+        objetosData,
+      });
 
       const clientesFormateados = clientesData.map(cliente => ({
         id: cliente.id,
         name: cliente.name,
+      }));
+      const objetosFormateados = objetosData.map(objeto => ({
+        id: objeto.id,
+        name: objeto.nombre,
+        descripcion: objeto.descripcion,
       }));
       console.log('Clientes formateados:', clientesFormateados);
       const planesFormateados = planesData.map(plan => ({
@@ -42,19 +54,27 @@ export const usePlanImportacionFormData = () => {
         codigo_pi: plan.codigo_pi,
         cliente: {
           id: plan.cliente.id,
-          name: plan.cliente.name
+          name: plan.cliente.name,
         },
         fecha_emision: plan.fecha_emision,
         anio_pi: plan.anio_pi,
-        importe_pi: plan.importe_pi
+        importe_pi: plan.importe_pi,
+        objetos: {
+          id: plan.objeto?.id ?? -1,
+          name: plan.objeto?.name ?? "",
+          descripcion: plan.objeto?.descripcion ?? "",
+        },
       }));
-      console.log('Datos formateados:', {
+      console.log("Datos formateados:", {
         clientesFormateados,
-        planesFormateados
+        planesFormateados,
+        objetosFormateados,
       });
 
       setClientes(clientesFormateados);
       setPlanesImportacion(planesFormateados);
+      setObjetos(objetosFormateados);
+
       setError(null);
     } catch (error) {
       console.error('Error completo:', error);
@@ -101,6 +121,7 @@ export const usePlanImportacionFormData = () => {
 
   const handleEditClick = (planImportacion) => {
     setSelectedPlanImportacion(planImportacion);
+    console.log('slectedplan', planImportacion);
     setIsFormEditOpen(true);
   };
 
@@ -151,6 +172,7 @@ export const usePlanImportacionFormData = () => {
     error,
     clientes,
     planesImportacion,
+    objetos,
     selectedPlanesImportacion,
     selectedPlanImportacion,
     isModalOpen,

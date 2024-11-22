@@ -18,7 +18,7 @@ const PlanImportacionTable = ({
     "Cliente",
     "Fecha Emisión",
     "Año PI",
-    "Importe PI"
+    "Importe PI",   
   ];
 
   const renderCells = (plan) => [

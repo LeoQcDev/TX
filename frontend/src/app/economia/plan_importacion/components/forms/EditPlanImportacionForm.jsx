@@ -1,7 +1,6 @@
 import PlanImportacionFormContainer from "./PlanImportacionFormContainer";
 
-const EditPlanImportacionForm = ({
-  idPlanImportacion,
+const EditPlanImportacionForm = ({ 
   initialData,
   onSuccess,
   onError,
@@ -9,8 +8,7 @@ const EditPlanImportacionForm = ({
 }) => {
   return (
     <PlanImportacionFormContainer
-      actionType="edit"
-      idPlanImportacion={idPlanImportacion}
+      actionType="edit"      
       initialData={initialData}
       onSuccess={onSuccess}
       onError={onError}

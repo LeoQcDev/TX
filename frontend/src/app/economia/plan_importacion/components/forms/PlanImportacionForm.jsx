@@ -16,12 +16,15 @@ const PlanImportacionForm = ({
   onCancel,
   setValue,
   control,
-  clientes
+  clientes,
+  objetos
 }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        {actionType === "create" ? "Nuevo Plan de Importación" : "Editar Plan de Importación"}
+        {actionType === "create"
+          ? "Nuevo Plan de Importación"
+          : "Editar Plan de Importación"}
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -86,6 +89,15 @@ const PlanImportacionForm = ({
             register={register("codigo_pi")}
             component={FormInput}
             error={errors.codigo_pi}
+          />
+          <FormField
+            id="objeto"
+            label="Objeto"
+            register={register("objeto")}
+            component={FormSelect}
+            options={objetos}
+            defaultOption="Seleccione un objeto"
+            error={errors.objeto}            
           />
         </div>
 
