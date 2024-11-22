@@ -108,5 +108,6 @@ export const sectionsLinks = {
     { href: "/configuracion/margen-comercial", label: "Margen Comercial" },
     { href: "/configuracion/representante", label: "Representante" },
     { href: "/configuracion/contrato", label: "Contrato" },
+    { href: "/configuracion/objeto", label: "Objeto" },
   ],
 };
