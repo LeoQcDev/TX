@@ -58,7 +58,9 @@ const PlanImportacionPage = () => {
     );
   }
 
-  const id = { id: planesImportacion[planesImportacion.length - 1].id + 1 };
+  const id = (planesImportacion[planesImportacion.length - 1]?.id ?? 0) + 1;
+  console.log("planes", filteredPlanesImportacion);
+  console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaa", selectedPlanImportacion);
 
   return (
     <FormProvider>

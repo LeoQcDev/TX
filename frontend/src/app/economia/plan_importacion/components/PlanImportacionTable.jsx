@@ -55,6 +55,7 @@ const PlanImportacionTable = ({
               onRowDoubleClick={onPlanImportacionDoubleClick}
               searchTerm={searchTerm}
               rowRenderer={renderCells}
+              planImportacion
             />
           </div>
         </div>

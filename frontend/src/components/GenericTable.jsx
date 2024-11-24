@@ -1,7 +1,6 @@
-import React from "react";
+import { InfoModal } from "@/app/economia/plan_importacion/components/info-modal";
 import CustomCheckBox from "@/components/CustomCheckBox";
 import EditButton from "@/components/EditButton";
-import { highlightMatch } from "@/utils/highlightMatch";
 
 const GenericTable = ({
   headers,
@@ -12,18 +11,21 @@ const GenericTable = ({
   searchTerm,
   onRowDoubleClick,
   rowRenderer,
+  planImportacion,
 }) => {
-  const toggleItemSelection = (id) => {
-    setSelectedItems((prev) =>
-      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+  const toggleItemSelection = id => {
+    console.log("idasdasdasdasdasd", id);
+    setSelectedItems(prev =>
+      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
     );
+    console.log("idasdasdasdasdasd", selectedItems);
   };
 
   const toggleAllItems = () => {
     if (selectedItems.length === data.length) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(data.map((item) => item.id));
+      setSelectedItems(data.map(item => item.id));
     }
   };
 
@@ -75,6 +77,7 @@ const GenericTable = ({
                 {rowRenderer(item, searchTerm)}
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <EditButton onEditClick={() => onEditClick(item)} />
+                  {planImportacion && <InfoModal id={item.id} />}
                 </td>
               </tr>
             ))

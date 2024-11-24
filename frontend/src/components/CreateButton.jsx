@@ -3,7 +3,7 @@
 
 import React from "react";
 
-const CreateButton = ({ onClick, label }) => {
+const CreateButton = ({ onClick, label}) => {
   return (
     <button
       onClick={onClick}

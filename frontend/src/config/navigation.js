@@ -109,5 +109,6 @@ export const sectionsLinks = {
     { href: "/configuracion/representante", label: "Representante" },
     { href: "/configuracion/contrato", label: "Contrato" },
     { href: "/configuracion/objeto", label: "Objeto" },
+    { href: "/configuracion/extraplan", label: "Extraplanes" },
   ],
 };

@@ -17,10 +17,9 @@ const PlanImportacionForm = ({
   isSubmitting,
   actionType,
   onCancel,
-  setValue,
-  control,
+  anioDefault,
   clientes,
-  objetos,
+  
   code,
 }) => {
   const validateMonth = value => {
@@ -54,8 +53,10 @@ const PlanImportacionForm = ({
     })
   );
 
-
+ 
+  console.log('fullAnio', anioDefault);
   const validarPlanUnico = (clienteId, anio) => {
+    if (anioDefault && anio == anioDefault) return true;
     console.log("Validando plan único para:", clienteId, anio)
     console.log("Clientes y planes:", clientesPlanesArray)
 

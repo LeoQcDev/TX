@@ -35,6 +35,7 @@ const handleApiError = (error) => {
 export const fetchData = async (endpoint) => {
   try {
     const response = await api.get(endpoint);
+     console.log("Respuesta de la API:", response);
     return response.data;
   } catch (error) {
     handleApiError(error);

@@ -1,17 +1,21 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { fetchClients } from "@/services/clientServices/clients";
-import { 
+import {
   fetchPlanesImportacion,
-  deletePlanImportacion 
+  deletePlanImportacion,
 } from "@/services/planImportacionServices/planImportacionServices";
 import { fetchObjects } from "@/services/objectServices/objects";
+import { fetchExtraplanes } from "@/services/extraplaneServices/extraplanes";
 
 export const usePlanImportacionFormData = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [clientes, setClientes] = useState([]);
   const [objetos, setObjetos] = useState([]);
   const [planesImportacion, setPlanesImportacion] = useState([]);
-  const [selectedPlanesImportacion, setSelectedPlanesImportacion] = useState([]);
+  const [planesImportacionFull, setPlanesImportacionFull] = useState([]);
+  const [selectedPlanesImportacion, setSelectedPlanesImportacion] = useState(
+    []
+  );
   const [selectedPlanImportacion, setSelectedPlanImportacion] = useState(null);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -25,30 +29,24 @@ export const usePlanImportacionFormData = () => {
   const obtenerPlanesImportacion = useCallback(async () => {
     try {
       setIsLoading(true);
-      console.log('Obteniendo planes de importación...');
-      
-      const [clientesData, planesData, objetosData] = await Promise.all([
+      console.log("Obteniendo planes de importación...");
+
+      const [clientesData, planesData, extraplanData] = await Promise.all([
         fetchClients(),
         fetchPlanesImportacion(),
-        fetchObjects(),
+        fetchExtraplanes(),
       ]);
-
+      // const objetosData =  localStorage.getItem(planId);
       console.log("Datos sin formatear:", {
         clientesData,
         planesData,
-        objetosData,
       });
 
       const clientesFormateados = clientesData.map(cliente => ({
         id: cliente.id,
         name: cliente.name,
       }));
-      const objetosFormateados = objetosData.map(objeto => ({
-        id: objeto.id,
-        name: objeto.nombre,
-        descripcion: objeto.descripcion,
-      }));
-      console.log('Clientes formateados:', clientesFormateados);
+      console.log("Clientes formateados:", clientesFormateados);
       const planesFormateados = planesData.map(plan => ({
         id: plan.id,
         codigo_pi: plan.codigo_pi,
@@ -59,42 +57,56 @@ export const usePlanImportacionFormData = () => {
         fecha_emision: plan.fecha_emision,
         anio_pi: plan.anio_pi,
         importe_pi: plan.importe_pi,
-        objetos: {
-          id: plan.objeto?.id ?? -1,
-          name: plan.objeto?.name ?? "",
-          descripcion: plan.objeto?.descripcion ?? "",
-        },
       }));
       console.log("Datos formateados:", {
         clientesFormateados,
         planesFormateados,
-        objetosFormateados,
       });
+
+      const fullPlandata = planesData.map(plan => {
+        const planId = plan.id;
+        const objetos = localStorage.getItem(plan.codigo_pi) || [];
+        const extraplanes = extraplanData.filter(
+          extraplan => extraplan.plan_importacion === planId
+        );
+        console.log("fffffff", objetos);
+        return {
+          ...plan,
+          objetos: objetos.length > 0 ? JSON.parse(objetos) : [],
+          extraplanes: extraplanes,
+        };
+      });
+      setPlanesImportacionFull(fullPlandata);
+
+      console.log("Datos full plan:", fullPlandata);
 
       setClientes(clientesFormateados);
       setPlanesImportacion(planesFormateados);
-      setObjetos(objetosFormateados);
 
       setError(null);
     } catch (error) {
-      console.error('Error completo:', error);
+      console.error("Error completo:", error);
       setError("Error al cargar los datos");
     } finally {
       setIsLoading(false);
     }
   }, []);
 
+  const getFullDatosById = id => {
+    return planesImportacionFull.find(p => p.id == id);
+  };
+
   useEffect(() => {
-    console.log('useEffect ejecutándose...');
+    console.log("useEffect ejecutándose...");
     obtenerPlanesImportacion();
   }, [obtenerPlanesImportacion]);
 
-  const handleSearchChange = (e) => {
+  const handleSearchChange = e => {
     setSearchTerm(e.target.value);
   };
 
   const filteredPlanesImportacion = useMemo(() => {
-    return planesImportacion.filter((plan) => {
+    return planesImportacion.filter(plan => {
       const searchString = searchTerm.toLowerCase();
       return (
         plan.codigo_pi?.toLowerCase().includes(searchString) ||
@@ -119,52 +131,65 @@ export const usePlanImportacionFormData = () => {
     setSelectedPlanImportacion(null);
   };
 
-  const handleEditClick = (planImportacion) => {
+  const handleEditClick = planImportacion => {
     setSelectedPlanImportacion(planImportacion);
-    console.log('slectedplan', planImportacion);
+    console.log("slectedplan", planImportacion);
     setIsFormEditOpen(true);
   };
 
-  const handlePlanImportacionDoubleClick = (planImportacion) => {
+  const handlePlanImportacionDoubleClick = planImportacion => {
     setSelectedPlanImportacion(planImportacion);
   };
 
   const handleEliminar = async () => {
+    setIsModalOpen(false);
     try {
       await Promise.all(
-        selectedPlanesImportacion.map((plan) => deletePlanImportacion(plan.id))
+        selectedPlanesImportacion.map(plan => deletePlanImportacion(plan))
       );
       obtenerPlanesImportacion();
       setSelectedPlanesImportacion([]);
-      setIsModalOpen(false);
-      showNotificationMessage("success", "Plan(es) de importación eliminado(s) exitosamente");
+      showNotificationMessage(
+        "success",
+        "Plan(es) de importación eliminado(s) exitosamente"
+      );
     } catch (error) {
-      showNotificationMessage("error", "Error al eliminar el/los plan(es) de importación");
+      showNotificationMessage(
+        "error",
+        error.response?.data?.detail ||
+          "Error al eliminar el/los plan(es) de importación"
+      );
     }
   };
 
   const handlePlanImportacionCreado = () => {
     setIsFormCreateOpen(false);
     obtenerPlanesImportacion();
-    showNotificationMessage("success", "Plan de Importación creado exitosamente");
+    showNotificationMessage(
+      "success",
+      "Plan de Importación creado exitosamente"
+    );
   };
 
   const handlePlanImportacionEditado = () => {
     setIsFormEditOpen(false);
     setSelectedPlanImportacion(null);
     obtenerPlanesImportacion();
-    showNotificationMessage("success", "Plan de Importación editado exitosamente");
+    showNotificationMessage(
+      "success",
+      "Plan de Importación editado exitosamente"
+    );
   };
 
-  const handleError = (message) => {
+  const handleError = message => {
     showNotificationMessage("error", message);
   };
 
-  console.log('Estado actual:', {
+  console.log("Estado actual:", {
     planesImportacion,
     filteredPlanesImportacion,
     isLoading,
-    error
+    error,
   });
 
   return {
@@ -172,6 +197,7 @@ export const usePlanImportacionFormData = () => {
     error,
     clientes,
     planesImportacion,
+    getFullDatosById,
     objetos,
     selectedPlanesImportacion,
     selectedPlanImportacion,
@@ -198,4 +224,4 @@ export const usePlanImportacionFormData = () => {
     setSelectedPlanesImportacion,
     setShowNotification,
   };
-}; 
+};

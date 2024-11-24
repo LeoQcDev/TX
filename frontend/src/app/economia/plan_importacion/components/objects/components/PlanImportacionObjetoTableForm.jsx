@@ -12,34 +12,30 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { useFormContext } from "@/contexts/FormContext";
 
-
 const EditableTable = ({ planId, importeTotal }) => {
   const { objects } = useObjetos();
-  const predefinedNames =objects ?objects.map(objeto => objeto.nombre) : [];
+  const predefinedNames = objects ? objects.map(objeto => objeto.nombre) : [];
   const router = useRouter();
-
-  
 
   const { control, register, handleSubmit, getValues, setValue, watch } =
     useForm({
       defaultValues: { rows: [] },
     });
-  
-  console.log('rowwwwwws', getValues());
+
+  console.log("rowwwwwws", getValues());
 
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "rows",
   });
 
-   const { setTriggerSubmit } = useFormContext();  
+  const { setTriggerSubmit } = useFormContext();
 
   useEffect(() => {
-     setTriggerSubmit(() => handleSubmit(onSubmit));
-   }, [setTriggerSubmit, handleSubmit]);
+    setTriggerSubmit(() => handleSubmit(onSubmit));
+  }, [setTriggerSubmit, handleSubmit]);
 
   useEffect(() => {
-   
     const savedData = localStorage.getItem(planId);
     if (savedData) {
       const parsedData = JSON.parse(savedData);
@@ -63,23 +59,21 @@ const EditableTable = ({ planId, importeTotal }) => {
     localStorage.setItem(planId, JSON.stringify(data.rows));
     setEditRowId(null);
   };
-    console.log("qqqqqqqqqqxxxxx", importeTotal);
+  console.log("qqqqqqqqqqxxxxx", importeTotal);
 
-  
   const validateRow = row => {
     const totalDesglose =
-    row.cortoPlazo + row.medianoPlazo + row.largoPlazo + row.liquido;
+      row.cortoPlazo + row.medianoPlazo + row.largoPlazo + row.liquido;
     const total = getValues().rows.reduce(
       (total, item) => total + item.importe,
       0
     );
     if (total > parseInt(importeTotal)) {
-       
-       setErrorMessage(
-         "El importe total no puede ser mayor al importe total del plan de importación, por favor actualice su importe de plan de producción"
+      setErrorMessage(
+        "El importe total no puede ser mayor al importe total del plan de importación, por favor actualice su importe de plan de producción"
       );
-       return false;
-     }
+      return false;
+    }
     if (totalDesglose > row.importe) {
       setErrorMessage(
         `El desglose total no puede ser mayor al importe para "${row.nombre}"`
@@ -113,12 +107,12 @@ const EditableTable = ({ planId, importeTotal }) => {
       setIsModalOpen(false);
       showNotificationMessage(
         "success",
-        "Plan(es) de importación eliminado(s) exitosamente"
+        "Objeto(s) eliminado(s) exitosamente"
       );
     } catch (error) {
       showNotificationMessage(
         "error",
-        "Error al eliminar el/los plan(es) de importación"
+        "Error al eliminar el/los Objeto(s)"
       );
     }
   };
@@ -162,13 +156,17 @@ const EditableTable = ({ planId, importeTotal }) => {
 
   if (predefinedNames.length == 0)
     return (
-      <div className="text-center p-4 bg-white shadow-md rounded-lg my-6">
-
+      <div className="text-center p-4 bg-white shadow-md rounded-lg my-6 flex flex-col items-center">
         No hay objetos disponibles para crear un plan de importación. Por favor,
         cree un objeto primero.
-        <Button onClick={() => router.push("/configuracion/objetos")} className="mt-4" variant="contained" color="primary">
-
-          Añadir objeto
+        <Button
+          className="flex items-center px-4 py-2 bg-blackRedTX text-white rounded-md hover:bg-red-700 
+      focus:outline-none focus:ring-2 focus:ring-red-800 focus:ring-opacity-50"
+          onClick={() => router.push("/configuracion/objeto")}
+          variant="contained"
+          color="primary"
+        >
+          Crear objeto
         </Button>
       </div>
     );
@@ -195,8 +193,28 @@ const EditableTable = ({ planId, importeTotal }) => {
           <DeleteButton
             onClick={() => setIsModalOpen(true)}
             disabled={!selectedRows?.length}
+            type = 'button'
           />
-          <CreateButton onClick={handleAddRow} label="Añadir objeto" />
+          <button
+            onClick={handleAddRow}
+            type="button"
+            className="flex items-center px-4 py-2 bg-blackRedTX text-white rounded-md hover:bg-red-700 
+      focus:outline-none focus:ring-2 focus:ring-red-800 focus:ring-opacity-50"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 mr-2"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Añadir objeto
+          </button>
         </PageButtonsLayout>
       </div>
 

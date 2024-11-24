@@ -3,9 +3,10 @@
 
 import React from "react";
 
-const DeleteButton = ({ onClick, disabled }) => {
+const DeleteButton = ({ onClick, disabled, type = 'submit' }) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className="flex items-center px-4 py-2 border border-gray-300 rounded-md bg-white text-gray-700 hover:bg-gray-50 

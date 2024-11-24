@@ -8,13 +8,14 @@ import "./globals.css";
 import Navbar from "@/components/navbar/Navbar";
 import Sidebar from "@/components/Sidebar";
 import PageContent from "@/components/PageContent";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function RootLayout({ children }) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
-  const toggleSidebar = () => setIsSidebarCollapsed((prev) => !prev);
+  const toggleSidebar = () => setIsSidebarCollapsed(prev => !prev);
 
   return (
     <html lang="es">
@@ -35,7 +36,9 @@ export default function RootLayout({ children }) {
 
               {/* PageContent en otro div separado */}
               <div className="flex-1 overflow-hidden overflow-y-auto">
-                <PageContent>{children}</PageContent>
+                <TooltipProvider>
+                  <PageContent>{children}</PageContent>
+                </TooltipProvider>
               </div>
             </div>
           </NavigationProvider>

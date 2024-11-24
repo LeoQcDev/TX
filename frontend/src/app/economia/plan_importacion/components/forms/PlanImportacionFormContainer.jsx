@@ -18,6 +18,7 @@ const PlanImportacionFormContainer = ({
   id,
 }) => {
   console.log("initalData", initialData);
+  const anio = initialData.anio_pi || new Date().getFullYear() + 1;
   const formattedInitialData = {
     ...initialData,
     cliente: initialData.cliente?.id || 0,
@@ -25,11 +26,12 @@ const PlanImportacionFormContainer = ({
       initialData.fecha_emision?.split("T")[0] ||
       new Date().toISOString().split("T")[0],
     importe_pi: initialData.importe_pi || "",
-    anio_pi: initialData.anio_pi || new Date().getFullYear() + 1,
-    codigo_pi:
-      initialData.codigo_pi || formatYearAndNumber(initialData.anio_pi, id),
+    anio_pi: anio,
+    codigo_pi: initialData.codigo_pi || formatYearAndNumber(anio, id),
     objeto: initialData.objeto?.id?.toString() || "",
   };
+
+  const anioDefault = actionType == 'edit' ? initialData.anio_pi : undefined;
 
   console.log("Initial Data Raw:", initialData);
   console.log("Formatted Initial Data:", formattedInitialData);
@@ -128,6 +130,7 @@ const PlanImportacionFormContainer = ({
       clientes={clientes}
       objetos={objetos}
       code={code}
+      anioDefault={anioDefault}
     />
   );
 };
