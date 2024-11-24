@@ -1,32 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { 
-  createPlanImportacion, 
-  updatePlanImportacion 
+import {
+  createPlanImportacion,
+  updatePlanImportacion,
 } from "@/services/planImportacionServices/planImportacionServices";
 import { usePlanImportacionFormData } from "../../hooks/usePlanImportacionFormData";
 import PlanImportacionForm from "./PlanImportacionForm";
+import { formatYearAndNumber } from "@/utils/formatters";
+import { useFormContext } from "@/contexts/FormContext";
 
 const PlanImportacionFormContainer = ({
-  actionType,  
+  actionType,
   initialData = {},
   onSuccess,
   onError,
   onCancel,
+  id,
 }) => {
+  console.log("initalData", initialData);
   const formattedInitialData = {
     ...initialData,
-    cliente: initialData.cliente?.id?.toString() || "",
+    cliente: initialData.cliente?.id || 0,
     fecha_emision:
-      initialData.fecha_emision || new Date().toISOString().split("T")[0],
+      initialData.fecha_emision?.split("T")[0] ||
+      new Date().toISOString().split("T")[0],
     importe_pi: initialData.importe_pi || "",
-    anio_pi: initialData.anio_pi || new Date().getFullYear(),
-    codigo_pi: initialData.codigo_pi || "",
+    anio_pi: initialData.anio_pi || new Date().getFullYear() + 1,
+    codigo_pi:
+      initialData.codigo_pi || formatYearAndNumber(initialData.anio_pi, id),
     objeto: initialData.objeto?.id?.toString() || "",
   };
 
-  console.log('Initial Data Raw:', initialData);
-  console.log('Formatted Initial Data:', formattedInitialData);
+  console.log("Initial Data Raw:", initialData);
+  console.log("Formatted Initial Data:", formattedInitialData);
 
   const {
     register,
@@ -38,17 +44,34 @@ const PlanImportacionFormContainer = ({
     clearErrors,
     reset,
     setError,
+    getValues,
   } = useForm({
-    defaultValues: formattedInitialData
+    defaultValues: formattedInitialData,
   });
-
+  console.log("zzzzzzzzzzzzzzzzzzzzz", getValues());
+  console.log(formattedInitialData);
   const { isLoading, clientes, objetos } = usePlanImportacionFormData();
-  console.log('objetos',objetos)
-  const handleFormSubmit = async (data) => {
-    console.log(
-      "------------------------------------------------",
-      parseInt(data.cliente)
-    );
+  console.log("objetos", clientes);
+
+  const anioPi = watch("anio_pi");
+  const code = watch("codigo_pi");
+  const { triggerSubmit } = useFormContext();
+  const fecha = watch("fecha_emision");
+ 
+
+  useEffect(() => {
+    if (fecha) setValue("anio_pi", parseInt(fecha.split('-')[0]) + 1);
+    if (anioPi && actionType == "create") {
+      const codigoPi = formatYearAndNumber(
+        parseInt(anioPi),
+        initialData.id || 1
+      );
+      setValue("codigo_pi", codigoPi);
+    }
+  }, [anioPi, setValue, initialData.id, fecha]);
+
+  const handleFormSubmit = async data => {
+    console.log(parseInt(data.cliente));
     try {
       const formattedData = {
         cliente_id: parseInt(data.cliente),
@@ -56,13 +79,15 @@ const PlanImportacionFormContainer = ({
         fecha_emision: new Date(data.fecha_emision).toISOString(),
         importe_pi: parseFloat(data.importe_pi),
         anio_pi: parseInt(data.anio_pi),
-        codigo_pi: data.codigo_pi
+        codigo_pi: data.codigo_pi,
       };
 
       if (actionType === "create") {
         await createPlanImportacion(formattedData);
+        if (triggerSubmit) triggerSubmit();
       } else {
         await updatePlanImportacion(initialData.id, formattedData);
+        if (triggerSubmit) triggerSubmit();
       }
 
       onSuccess();
@@ -74,15 +99,17 @@ const PlanImportacionFormContainer = ({
         Object.keys(errorData).forEach(field => {
           setError(field, {
             type: "manual",
-            message: Array.isArray(errorData[field]) 
-              ? errorData[field][0] 
-              : errorData[field]
+            message: Array.isArray(errorData[field])
+              ? errorData[field][0]
+              : errorData[field],
           });
         });
       }
       onError(
-        error.response?.data?.detail || 
-        `Error al ${actionType === "create" ? "crear" : "editar"} el Plan de Importación`
+        error.response?.data?.detail ||
+          `Error al ${
+            actionType === "create" ? "crear" : "editar"
+          } el Plan de Importación`
       );
     }
   };
@@ -99,9 +126,10 @@ const PlanImportacionFormContainer = ({
       setValue={setValue}
       control={control}
       clientes={clientes}
-      objetos = {objetos}
+      objetos={objetos}
+      code={code}
     />
   );
 };
 
-export default PlanImportacionFormContainer; 
+export default PlanImportacionFormContainer;

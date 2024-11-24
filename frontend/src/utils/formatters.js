@@ -8,3 +8,9 @@ export const formatDate = (dateString) => {
     day: '2-digit'
   });
 }; 
+
+export function formatYearAndNumber(year, number) {
+  
+  const formattedNumber = number.toString().padStart(4, "0");
+  return `${year}${formattedNumber}`;
+}
