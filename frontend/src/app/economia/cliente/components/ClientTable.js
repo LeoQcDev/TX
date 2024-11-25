@@ -14,11 +14,11 @@ const ClientTable = ({
   searchTerm,
 }) => {
   const headers = [
-    "Nombre de la Empresa",
+    "Nombre de la empresa",
     "AEI",
-    "Código Cliente",
+    "Código cliente",
     "Polo",
-    "Fecha de Vencimiento",
+    "Fecha de vencimiento",
   ];
 
   const renderRow = (client, searchTerm) => [

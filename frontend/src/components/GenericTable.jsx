@@ -44,7 +44,7 @@ const GenericTable = ({
             {headers.map((header, index) => (
               <th
                 key={index}
-                className="px-6 py-3 text-center text-xs font-semibold text-gray-800 uppercase tracking-wider"
+                className="px-6 py-3 text-center text-xs font-semibold text-gray-800 tracking-wider"
               >
                 {header}
               </th>

@@ -23,11 +23,11 @@ export const menuItems = [
   { icon: TrendingUp, text: "Economía", href: "/economia" },
   { icon: ShoppingBag, text: "Comercial", href: "/comercial" },
   { icon: Briefcase, text: "Mercado", href: "/mercado" },
-  { icon: Hammer, text: "Operacion", href: "/operacion" },
+  { icon: Hammer, text: "Operación", href: "/operacion" },
   { icon: Sliders, text: "Ajustes", href: "/ajustes" },
-  { icon: Settings, text: "Administracion", href: "/administracion" },
+  { icon: Settings, text: "Administración", href: "/administracion" },
   { icon: MoreHorizontal, text: "Otros", href: "/otros" },
-  { icon: BookOpen, text: "Juridico", href: "/juridico" },
+  { icon: BookOpen, text: "Jurídico", href: "/juridico" },
   { icon: Box, text: "Aplicaciones", href: "/aplicaciones" },
   { icon: FileText, text: "Reportes", href: "/reportes" },
 ];
@@ -51,62 +51,71 @@ export const sectionsLinks = {
     { href: "/control/auditorias", label: "Auditorías" },
     { href: "/control/incidencias", label: "Gestión de Incidencias" },
   ],
-  Economia: [
+  Economía: [
     { href: "/economia/pedido", label: "Pedido" },
     { href: "/economia/aprobacion", label: "Aprobación" },
-    { href: "/economia/plan-importacion", label: "Plan de Importación" },
+    { href: "/economia/plan-importacion", label: "Plan de importación" },
     { href: "/economia/cliente", label: "Cliente" },
   ],
   Comercial: [
     { href: "/comercial/compras", label: "Compras" },
     { href: "/comercial/ventas", label: "Ventas" },
     { href: "/comercial/clientes", label: "Clientes" },
-    { href: "/comercial/marketing", label: "Estrategias de Marketing" },
+    { href: "/comercial/marketing", label: "Estrategias de marketing" },
   ],
   Mercado: [
-    { href: "/mercado/investigacion", label: "Investigación de Mercado" },
+    { href: "/mercado/investigacion", label: "Investigación de mercado" },
     { href: "/mercado/tendencias", label: "Tendencias" },
     { href: "/mercado/competencia", label: "Competencia" },
   ],
-  Operacion: [
+  Operación: [
     { href: "/operacion/logistica", label: "Logística" },
-    { href: "/operacion/proyectos", label: "Gestión de Proyectos" },
+    { href: "/operacion/proyectos", label: "Gestión de proyectos" },
     { href: "/operacion/produccion", label: "Producción" },
   ],
   Ajustes: [
-    { href: "/ajustes/preferencias", label: "Preferencias del Usuario" },
+    { href: "/ajustes/preferencias", label: "Preferencias del usuario" },
     { href: "/ajustes/seguridad", label: "Seguridad" },
     { href: "/ajustes/integraciones", label: "Integraciones" },
   ],
-  Administracion: [
-    { href: "/administracion/control", label: "Panel de Control" },
-    { href: "/administracion/politicas", label: "Políticas Internas" },
-    { href: "/administracion/recursos", label: "Gestión de Recursos" },
+  Administración: [
+    { href: "/administracion/control", label: "Panel de control" },
+    { href: "/administracion/politicas", label: "Políticas internas" },
+    { href: "/administracion/recursos", label: "Gestión de recursos" },
   ],
   Otros: [
-    { href: "/otros/servicios", label: "Servicios Adicionales" },
+    { href: "/otros/servicios", label: "Servicios adicionales" },
     { href: "/otros/soporte", label: "Soporte" },
     { href: "/otros/eventos", label: "Eventos" },
   ],
-  Juridico: [
+  Jurídico: [
     { href: "/juridico/contratos", label: "Contratos" },
     { href: "/juridico/cumplimiento", label: "Cumplimiento" },
-    { href: "/juridico/asesoria", label: "Asesoría Legal" },
+    { href: "/juridico/asesoria", label: "Asesoría legal" },
   ],
   Aplicaciones: [
-    { href: "/aplicaciones/internas", label: "Aplicaciones Internas" },
+    { href: "/aplicaciones/internas", label: "Aplicaciones internas" },
     { href: "/aplicaciones/api", label: "API" },
     { href: "/aplicaciones/documentacion", label: "Documentación" },
   ],
   Reportes: [
-    { href: "/reportes/mensuales", label: "Reportes Mensuales" },
-    { href: "/reportes/analisis", label: "Análisis de Datos" },
+    { href: "/reportes/mensuales", label: "Reportes mensuales" },
+    { href: "/reportes/analisis", label: "Análisis de datos" },
     { href: "/reportes/exportaciones", label: "Exportaciones" },
   ],
-  Configuracion: [
+  Configuración: [
     { href: "/configuracion/polo", label: "Polo" },
-    { href: "/configuracion/margen-comercial", label: "Margen Comercial" },
+    { href: "/configuracion/margen-comercial", label: "Margen comercial" },
     { href: "/configuracion/representante", label: "Representante" },
     { href: "/configuracion/contrato", label: "Contrato" },
   ],
+};
+
+export const sectionTitles = {
+  economia: "Economía",
+  operacion: "Operación",
+  administracion: "Administración",
+  juridico: "Jurídico",
+  configuracion: "Configuración",
+  // ... agregar más mapeos según sea necesario
 };

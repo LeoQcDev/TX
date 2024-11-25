@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { sectionsLinks } from "@/config/navigation";
+import { sectionsLinks, sectionTitles } from "@/config/navigation";
 
 const NavigationContext = createContext();
 
@@ -16,7 +16,10 @@ export const NavigationProvider = ({ children }) => {
   useEffect(() => {
     const section = pathname.split("/")[1];
     if (section) {
-      setCurrentSection(section.charAt(0).toUpperCase() + section.slice(1));
+      setCurrentSection(
+        sectionTitles[section] ||
+          section.charAt(0).toUpperCase() + section.slice(1)
+      );
     } else {
       setCurrentSection("TECNOTEX");
     }

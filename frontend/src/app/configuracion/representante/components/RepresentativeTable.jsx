@@ -11,7 +11,7 @@ const RepresentativeTable = ({
   onEditClick,
   searchTerm,
 }) => {
-  const headers = ["Nombre y Apellidos", "Correo", "Teléfono"];
+  const headers = ["Nombre y apellidos", "Correo", "Teléfono"];
 
   const renderRow = (representative, searchTerm) => [
     <td key="nombre" className="px-6 py-4 text-center whitespace-nowrap">

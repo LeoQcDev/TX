@@ -13,10 +13,10 @@ const ContractTable = ({
   filterType,
 }) => {
   const headers = [
-    "Número de Contrato",
+    "Número de contrato",
     "Cliente",
-    "Fecha de Firma",
-    "Fecha de Vencimiento",
+    "Fecha de firma",
+    "Fecha de vencimiento",
   ];
 
   const renderRow = (contract, searchTerm, filterType) => [

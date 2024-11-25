@@ -11,7 +11,7 @@ const ComercialMarginTable = ({
   onEditClick,
   searchTerm,
 }) => {
-  const headers = ["Margen Comercial"];
+  const headers = ["Margen comercial"];
 
   const renderRow = (comercialMargin, searchTerm) => [
     <td
