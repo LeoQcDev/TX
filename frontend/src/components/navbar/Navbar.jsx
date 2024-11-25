@@ -77,7 +77,7 @@ export default function Navbar() {
           ref={configMenuRef}
           showConfigMenu={showConfigMenu}
           setShowConfigMenu={setShowConfigMenu}
-          configLinks={sectionsLinks["Configuracion"]}
+          configLinks={sectionsLinks["Configuración"]}
           handleNavigation={handleNavigation}
         />
       </div>
