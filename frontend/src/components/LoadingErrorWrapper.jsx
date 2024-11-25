@@ -5,7 +5,7 @@ const LoadingErrorWrapper = ({ isLoading, error, loadingMessage }) => {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-800"></div>
+        <div className="loading animate-spin rounded-full h-8 w-8 border-b-2 border-red-800"></div>
         <span className="ml-2 text-lg font-semibold">{loadingMessage}</span>
       </div>
     );

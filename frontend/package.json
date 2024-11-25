@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:formulario": "node src/tests/e2e/testFormulario.spec.js",
+    "test:obtenerPlanes": "node src/tests/e2e/testObtenerPlanes.spec.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.1.8",
@@ -21,6 +23,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@tanstack/react-table": "^8.20.5",
     "axios": "^1.7.7",
+    "chromedriver": "^131.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.11.0",
@@ -32,6 +35,7 @@
     "react-hook-form": "^7.53.0",
     "react-query": "^3.39.3",
     "react-select": "^5.8.3",
+    "selenium-webdriver": "^4.26.0",
     "shadcn-ui": "^0.2.3",
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7"

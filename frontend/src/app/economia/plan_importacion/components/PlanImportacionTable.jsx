@@ -22,19 +22,19 @@ const PlanImportacionTable = ({
   ];
 
   const renderCells = (plan) => [
-    <td key="codigo" className="px-6 py-4 text-center whitespace-nowrap">
+    <td key="codigo" className="plan-item px-6 py-4 text-center whitespace-nowrap">
       {searchTerm ? highlightMatch(plan.codigo_pi, searchTerm) : plan.codigo_pi}
     </td>,
-    <td key="cliente" className="px-6 py-4 text-center whitespace-nowrap">
+    <td key="cliente" className="plan-item px-6 py-4 text-center whitespace-nowrap">
       {plan.cliente?.name || 'N/A'}
     </td>,
-    <td key="fecha" className="px-6 py-4 text-center whitespace-nowrap">
+    <td key="fecha" className="plan-item px-6 py-4 text-center whitespace-nowrap">
       {formatDate(plan.fecha_emision)}
     </td>,
-    <td key="anio" className="px-6 py-4 text-center whitespace-nowrap">
+    <td key="anio" className="plan-item px-6 py-4 text-center whitespace-nowrap">
       {plan.anio_pi || 'N/A'}
     </td>,
-    <td key="importe" className="px-6 py-4 text-center whitespace-nowrap">
+    <td key="importe" className="plan-item px-6 py-4 text-center whitespace-nowrap">
       {typeof plan.importe_pi === 'number' 
         ? plan.importe_pi.toFixed(2) 
         : plan.importe_pi || '0.00'}

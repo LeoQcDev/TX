@@ -25,7 +25,7 @@ const Notification = ({ message, type = "info", onClose }) => {
   const getTypeStyles = () => {
     switch (type) {
       case "success":
-        return "bg-green-500 text-white";
+        return " bg-green-500 text-white";
       case "error":
         return "bg-red-500 text-white";
       case "warning":
@@ -61,7 +61,9 @@ const Notification = ({ message, type = "info", onClose }) => {
       >
         <div className="flex-1 flex items-start">
           <div className="mr-3 mt-0.5">{getIcon()}</div>
-          <p className="text-sm font-medium break-words">{message}</p>
+          <p className="success-message text-sm font-medium break-words">
+            {message}
+          </p>
         </div>
         <button
           onClick={() => setIsVisible(false)}
