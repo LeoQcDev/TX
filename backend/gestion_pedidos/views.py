@@ -1,4 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from .models import GenericoProducto, UnidadCompra, Pedido, Posicion, Producto, UnidadMedida
 from .serializers import GenericoProductoSerializer, UnidadCompraSerializer, PedidoSerializer, PosicionSerializer, ProductoSerializer, UnidadMedidaSerializer, PedidoReadSerializer
@@ -57,3 +60,15 @@ class UnidadMedidaViewSet(viewsets.ModelViewSet):
     queryset = UnidadMedida.objects.all()
     serializer_class = UnidadMedidaSerializer
 
+
+    # @action(detail=True, methods=['put'])
+    # def actualizar_pedido(self, request, pk=None):
+
+    #     pedido = self.get_object()
+    #     serializer = self.get_serializer(pedido, data=request.data, partial=True)
+        
+    #     if serializer.is_valid():
+    #         self.perform_update(serializer)
+    #         return Response(serializer.data)
+        
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

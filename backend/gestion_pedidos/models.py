@@ -92,10 +92,11 @@ class Pedido(models.Model):
         'gestion_aprobaciones.CodigoAprobacion',
         related_name='pedidos_relacionados'
     )
-    presentador = models.CharField(max_length=200)
-    tipo_pedido = models.CharField(max_length=100)
-    unidad_compra = models.ForeignKey(UnidadCompra, on_delete=models.CASCADE)
-    generico_producto = models.ForeignKey(GenericoProducto, on_delete=models.CASCADE)
+    presentador = models.CharField(max_length=200,null=True)
+    grupo = models.CharField(max_length=200,null=True)
+    tipo_pedido = models.CharField(max_length=100,null=True)
+    unidad_compra = models.ForeignKey(UnidadCompra, on_delete=models.CASCADE,null=True)
+    generico_producto = models.ForeignKey(GenericoProducto, on_delete=models.CASCADE,null=True)
     fecha_presentado = models.DateTimeField(
         default=timezone.now,
         validators=[validate_date_range_three_days]
