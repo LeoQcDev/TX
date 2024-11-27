@@ -8,6 +8,7 @@ import FormInput from "@/components/form/FormInput";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/button";
 import Select from "react-select";
+import { validateNumero711, validatePresentador, validateTipoPedido,validateGrupo } from "@/utils/validations";
 
 const PedidoForm = ({
   onSubmit,
@@ -195,11 +196,8 @@ const PedidoForm = ({
             type="text"
             placeholder="123/OC"
             register={register("numero_711", {
-              required: "Campo obligatorio",
-              pattern: {
-                value: /^[0-9]+\/OC$/,
-                message: "El formato debe ser números seguidos de /OC",
-              }
+              required: "Campo obligatorio. Por favor complételo",
+              validate: validateNumero711
             })}
             component={FormInput}
             error={errors.numero_711}
@@ -220,33 +218,7 @@ const PedidoForm = ({
             value={watch("cliente")}
           />
 
-          <FormField
-            id="generico_producto"
-            label="Genérico"
-            register={register("generico_producto", {
-              required: "Debe seleccionar un genérico"
-            })}
-            component={FormSelect}
-            options={genericosProducto}
-            defaultOption="Seleccione un genérico"
-            error={errors.generico_producto}
-            required
-            value={watch("generico_producto")}
-          />
-
-          <FormField
-            id="unidad_compra"
-            label="Unidad de Compra"
-            register={register("unidad_compra", {
-              required: "Debe seleccionar una unidad"
-            })}
-            component={FormSelect}
-            options={unidadesCompra}
-            defaultOption="Seleccione una unidad"
-            error={errors.unidad_compra}
-            required
-            value={watch("unidad_compra")}
-          />
+          
 
           <FormField
             id="plan_importacion"
@@ -273,29 +245,73 @@ const PedidoForm = ({
             value={totalFinanciamiento.toFixed(2)}
           />
 
+          {actionType === "edit" && (
+            <>
+            <FormField
+            id="generico_producto"
+            label="Genérico"
+            register={register("generico_producto", {
+              required: "Debe seleccionar un genérico"
+            })}
+            component={FormSelect}
+            options={genericosProducto}
+            defaultOption="Seleccione un genérico"
+            error={errors.generico_producto}
+            required
+            value={watch("generico_producto")}
+          />
+
           <FormField
+            id="unidad_compra"
+            label="Unidad de Compra"
+            register={register("unidad_compra", {
+              required: "Debe seleccionar una unidad"
+            })}
+            component={FormSelect}
+            options={unidadesCompra}
+            defaultOption="Seleccione una unidad"
+            error={errors.unidad_compra}
+            required
+            value={watch("unidad_compra")}
+          />
+            <FormField
             id="presentador"
             label="Presentador"
             type="text"
             register={register("presentador", {
-              required: "Campo obligatorio",
+              required: "Campo obligatorio. Por favor complételo",
+              validate: validatePresentador
             })}
             component={FormInput}
             error={errors.presentador}
             required
           />
-
+          <FormField
+            id="grupo"
+            label="Grupo"
+            type="text"
+            register={register("grupo", {
+              required: "Campo obligatorio. Por favor complételo",
+              validate: validateGrupo
+            })}
+            component={FormInput}
+            error={errors.grupo}
+            required
+          />
           <FormField
             id="tipo_pedido"
             label="Tipo de Pedido"
             type="text"
             register={register("tipo_pedido", {
-              required: "Campo obligatorio",
+              required: "Campo obligatorio. Por favor complételo",
+              validate: validateTipoPedido
             })}
             component={FormInput}
             error={errors.tipo_pedido}
             required
           />
+          </>
+          )}
         </div>
 
         <div className="mt-8">

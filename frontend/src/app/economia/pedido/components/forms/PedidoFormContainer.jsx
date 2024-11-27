@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { createPedido, updatePedido } from "@/services/pedidoServices/pedidos";
 import { usePedidoFormData } from "../hooks/usePedidoFormData";
 import PedidoForm from "./PedidoForm";
-import CreatePosicionForm from "../posicion/CreatePosicionForm";
+import CreatePosicionForm from "@/app/economia/posicion/CreatePosicionForm";
 
 const PedidoFormContainer = ({
   actionType,
@@ -30,6 +30,7 @@ const PedidoFormContainer = ({
       ? initialData.codigos_aprobacion.map(cod => typeof cod === 'object' ? cod.id : cod)
       : [],
     presentador: initialData.presentador || '',
+    grupo: initialData.grupo || '',
     tipo_pedido: initialData.tipo_pedido || '',
     numero_711: initialData.numero_711 || ''
   };
@@ -42,7 +43,7 @@ const PedidoFormContainer = ({
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     watch,
     setValue,
     control,
@@ -50,7 +51,10 @@ const PedidoFormContainer = ({
     reset,
     setError,
   } = useForm({
-    defaultValues: formattedInitialData
+    defaultValues: formattedInitialData,
+    mode: "onChange",
+    reValidateMode: "onChange",
+    criteriaMode: "all"
   });
 
   const { 
@@ -97,21 +101,34 @@ const PedidoFormContainer = ({
         return date.toISOString().split('T')[0];
       };
 
-      const formattedData = {
-        cliente: data.cliente ? parseInt(data.cliente) : null,
-        numero_711: data.numero_711 || '',
-        fecha_entrada_tecnotex: formatDate(data.fecha_entrada_tecnotex) || formatDate(new Date()),
-        fecha_presentado: formatDate(data.fecha_presentado) || formatDate(new Date()),
-        plan_importacion: data.plan_importacion ? parseInt(data.plan_importacion) : null,
-        generico_producto: data.generico_producto ? parseInt(data.generico_producto) : null,
-        unidad_compra: data.unidad_compra ? parseInt(data.unidad_compra) : null,
-        presentador: data.presentador || '',
-        tipo_pedido: data.tipo_pedido || '',
-        aprobaciones: watch('aprobaciones') || [],
-        codigos_aprobacion: watch('codigos_aprobacion') || []
-      };
+      let formattedData;
+      
+      if (actionType === "create") {
+        formattedData = {
+          cliente: data.cliente && data.cliente !== '' ? parseInt(data.cliente) : null,
+          numero_711: data.numero_711 || '',
+          plan_importacion: data.plan_importacion && data.plan_importacion !== '' ? parseInt(data.plan_importacion) : null,
+          aprobaciones: watch('aprobaciones') || [],
+          codigos_aprobacion: watch('codigos_aprobacion') || []
+        };
+      } else {
+        formattedData = {
+          ...data,
+          cliente: data.cliente && data.cliente !== '' ? parseInt(data.cliente) : null,
+          plan_importacion: data.plan_importacion && data.plan_importacion !== '' ? parseInt(data.plan_importacion) : null,
+          aprobaciones: watch('aprobaciones') || [],
+          codigos_aprobacion: watch('codigos_aprobacion') || [],
+          fecha_entrada_tecnotex: formatDate(data.fecha_entrada_tecnotex) || formatDate(new Date()),
+          fecha_presentado: formatDate(data.fecha_presentado) || formatDate(new Date()),
+          unidad_compra: data.unidad_compra && data.unidad_compra !== '' ? parseInt(data.unidad_compra) : null,
+          generico_producto: data.generico_producto && data.generico_producto !== '' ? parseInt(data.generico_producto) : null,
+          presentador: data.presentador || '',
+          grupo: data.grupo || '',
+          tipo_pedido: data.tipo_pedido || ''
+        };
+      }
 
-      const requiredFields = ['cliente', 'numero_711', 'generico_producto', 'unidad_compra'];
+      const requiredFields = ['cliente', 'numero_711', 'plan_importacion'];
       const missingFields = requiredFields.filter(field => !formattedData[field]);
       
       if (missingFields.length > 0) {
@@ -137,17 +154,6 @@ const PedidoFormContainer = ({
       reset();
     } catch (error) {
       console.error("Error completo:", error);
-      if (error.response?.status === 400) {
-        const errorData = error.response.data;
-        Object.keys(errorData).forEach(field => {
-          setError(field, {
-            type: "manual",
-            message: Array.isArray(errorData[field]) 
-              ? errorData[field][0] 
-              : errorData[field]
-          });
-        });
-      }
       onError(
         error.response?.data?.detail || 
         `Error al ${actionType === "create" ? "crear" : "editar"} el Pedido`

@@ -303,3 +303,37 @@ export function validateEmptyString(text) {
     return text;
   }
 }
+
+export const validateNumero711 = (value) => {
+  if (!value) return "El número 711 es requerido";
+  if (!/^[0-9]+\/OC$/.test(value)) {
+    return "El formato debe ser números seguidos de /OC";
+  }
+  return true;
+};
+
+export const validatePresentador = (value) => {
+  if (!value?.trim()) return "El presentador es requerido";
+  if (value.trim().length < 2) {
+    return "El presentador debe tener al menos 2 caracteres";
+  }
+  return true;
+};
+export const validateGrupo = (value) => {
+  if (!value?.trim()) return "El grupo es requerido";
+  if (value.trim().length < 2) {
+    return "El grupo debe tener al menos 2 caracteres";
+  }
+  return true;
+};
+export const validateTipoPedido = (value) => {
+  if (!value?.trim()) return "El tipo de pedido es requerido";
+  if (value.trim().length < 2) {
+    return "El tipo de pedido debe tener al menos 2 caracteres";
+  }
+  return true;
+};
+export const validateCliente = (value) => {
+  if (!value) return "El cliente es requerido";
+  return true;
+};

@@ -12,11 +12,13 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
     watch,
     setValue,
     control,
+    setError,
   } = useForm({
     defaultValues: {
       fecha_entrada_tecnotex: new Date().toISOString().split('T')[0],
       fecha_presentado: new Date().toISOString().split('T')[0],
-    }
+    },
+    mode: "onSubmit"
   });
 
   const { 
@@ -31,23 +33,40 @@ const CreatePedidoForm = ({ onSuccess, onError, onCancel }) => {
 
   const onSubmit = async (data) => {
     try {
-      
+      const requiredFields = {
+        numero_711: "El número 711 es requerido",
+        cliente: "Debe seleccionar un cliente",
+        plan_importacion: "Debe seleccionar un plan de importación",
+        aprobaciones: "Debe seleccionar al menos una aprobación",
+        codigos_aprobacion: "Debe seleccionar al menos un código de aprobación"
+      };
+
+      let hasErrors = false;
+
+      Object.entries(requiredFields).forEach(([field, message]) => {
+        if (!data[field] || (Array.isArray(data[field]) && data[field].length === 0)) {
+          setError(field, {
+            type: 'manual',
+            message
+          });
+          hasErrors = true;
+        }
+      });
+
+      if (hasErrors) {
+        return;
+      }
+
       const formattedData = {
         cliente: parseInt(data.cliente),
         numero_711: data.numero_711,
         fecha_entrada_tecnotex: new Date(data.fecha_entrada_tecnotex).toISOString(),
         fecha_presentado: new Date(data.fecha_presentado).toISOString(),
         plan_importacion: parseInt(data.plan_importacion),
-        generico_producto: parseInt(data.generico_producto),
-        unidad_compra: parseInt(data.unidad_compra),
-        presentador: data.presentador,
-        tipo_pedido: data.tipo_pedido,
-        // Don't send financiamiento as it's calculated on the backend
-        aprobaciones: data.approvals.map(approval => parseInt(approval.approval)),
-        codigos_aprobacion: data.approvals.flatMap(approval => 
-          approval.codes.map(code => parseInt(code))
-        )
+        aprobaciones: data.aprobaciones || [],
+        codigos_aprobacion: data.codigos_aprobacion || []
       };
+
       await createPedido(formattedData);
       onSuccess();
     } catch (error) {

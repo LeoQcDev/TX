@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { updatePedido } from "@/services/pedidoServices/pedidos";
 import PedidoForm from "./PedidoForm";
 import { usePedidoFormData } from "../hooks/usePedidoFormData";
-import CreatePosicionForm from "./CreatePosicionForm";
+import CreatePosicionForm from "@/app/economia/posicion/CreatePosicionForm";
 
 const EditPedidoForm = ({ idPedido, initialData, onSuccess, onError, onCancel }) => {
   console.log('EditPedidoForm - Raw Initial Data:', {

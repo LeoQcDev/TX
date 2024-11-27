@@ -25,7 +25,7 @@ export const menuItems = [
   { icon: Briefcase, text: "Mercado", href: "/mercado" },
   { icon: Hammer, text: "Operacion", href: "/operacion" },
   { icon: Sliders, text: "Ajustes", href: "/ajustes" },
-  { icon: Settings, text: "Administracion", href: "/administracion" },
+  { icon: Settings, text: "Administración", href: "/administracion" },
   { icon: MoreHorizontal, text: "Otros", href: "/otros" },
   { icon: BookOpen, text: "Juridico", href: "/juridico" },
   { icon: Box, text: "Aplicaciones", href: "/aplicaciones" },
@@ -51,7 +51,7 @@ export const sectionsLinks = {
     { href: "/control/auditorias", label: "Auditorías" },
     { href: "/control/incidencias", label: "Gestión de Incidencias" },
   ],
-  Economia: [
+  Economía: [
     { href: "/economia/pedido", label: "Pedido" },
     { href: "/economia/aprobacion", label: "Aprobación" },
     { href: "/economia/plan-importacion", label: "Plan de Importación" },
@@ -78,7 +78,7 @@ export const sectionsLinks = {
     { href: "/ajustes/seguridad", label: "Seguridad" },
     { href: "/ajustes/integraciones", label: "Integraciones" },
   ],
-  Administracion: [
+Administración: [
     { href: "/administracion/control", label: "Panel de Control" },
     { href: "/administracion/politicas", label: "Políticas Internas" },
     { href: "/administracion/recursos", label: "Gestión de Recursos" },
@@ -108,5 +108,8 @@ export const sectionsLinks = {
     { href: "/configuracion/margen-comercial", label: "Margen Comercial" },
     { href: "/configuracion/representante", label: "Representante" },
     { href: "/configuracion/contrato", label: "Contrato" },
+    { href: "/configuracion/generico-producto", label: "Producto Genérico" },
+    { href: "/configuracion/unidad-compra", label: "Unidad de Compra" },
+    { href: "/configuracion/unidad-medida", label: "Unidad de Medida" },
   ],
 };
